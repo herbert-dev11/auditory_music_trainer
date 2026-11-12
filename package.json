@@ -1,0 +1,13 @@
+{
+  "name": "TODO-nome-do-repo",
+  "version": "0.1.0",
+  "description": "TODO",
+  "scripts": {
+    "dev": "TODO",
+    "start": "TODO",
+    "build": "TODO",
+    "typecheck": "TODO",
+    "test": "TODO"
+  },
+  "license": "ISC"
+}
