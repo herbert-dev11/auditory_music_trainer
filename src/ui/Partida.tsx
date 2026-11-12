@@ -9,8 +9,11 @@ import { NOME_DO_INSTRUMENTO, voicing } from '../dominio/instrumentos'
 import { cifra, nomeFalado, type Item } from '../dominio/itens'
 import { novaPartida, reduzir, TEMPO_PARA_RESPONDER_MS, type EstadoDaPartida } from '../exercicio/partida'
 import { itensDaSelecao, podeComecar } from '../exercicio/selecao'
+import type { ResultadoDaEscuta } from '../fala/reconhecedor'
 import { TituloDaTela } from './Comum'
 import { useDependencias } from './contexto'
+import { BotaoSegurar } from './BotaoSegurar'
+import { useSegurarParaFalar } from './useSegurarParaFalar'
 
 /** Depois de um acerto, quanto esperar antes do próximo item. */
 const PAUSA_DEPOIS_DO_ACERTO_MS = 400
@@ -56,12 +59,39 @@ function Jogo({ selecao }: { selecao: Selecao }) {
   const [erroDeFala, setErroDeFala] = useState<string | null>(null)
   const [erroDeSom, setErroDeSom] = useState(false)
   const [inicioDaEscuta, setInicioDaEscuta] = useState<number | null>(null)
-  // Muda para reabrir o microfone depois de um erro do reconhecimento ("Tentar de novo").
-  const [tentativaDeEscuta, setTentativaDeEscuta] = useState(0)
+  const [dica, setDica] = useState('')
 
   const tocador = tocadores[selecao.instrumento]
   const limiteMs = TEMPO_PARA_RESPONDER_MS[selecao.modo]
   const pergunta = selecao.modo === 'nota' ? 'Que nota é essa?' : 'Que acorde é esse?'
+
+  /** Resultado de uma escuta (ao soltar o botão): interpreta e manda para a máquina. */
+  const aoOuvir = (resultado: ResultadoDaEscuta) => {
+    if (estado.fase.nome !== 'ouvindo') return
+    const tempoMs = Math.round(performance.now() - (inicioDaEscuta ?? performance.now()))
+    if (resultado.tipo === 'fala') {
+      const textos = resultado.alternativas.map((a) => a.texto)
+      const interpretado = interpretarAlternativas(textos, selecao.modo)
+      despachar({
+        tipo: 'respondeu',
+        entendido: interpretado?.item ?? null,
+        texto: interpretado?.texto ?? textos[0] ?? null,
+        tempoMs,
+      })
+    } else if (resultado.tipo === 'silencio') {
+      despachar({ tipo: 'silencio', tempoMs })
+    } else if (resultado.codigo !== 'aborted') {
+      setErroDeFala(resultado.codigo)
+    }
+  }
+
+  // Segurar para falar (plans/013): o microfone só abre enquanto segura o botão ou a barra de espaço.
+  const fala = useSegurarParaFalar({
+    reconhecedor,
+    ativo: estado.fase.nome === 'ouvindo',
+    onResultado: aoOuvir,
+    onToqueCurto: () => setDica('Segure o botão enquanto fala e solte ao terminar.'),
+  })
 
   useEffect(() => {
     tocador
@@ -108,28 +138,17 @@ function Jogo({ selecao }: { selecao: Selecao }) {
         break
 
       case 'ouvindo':
-        void (async () => {
-          setErroDeFala(null)
-          const inicio = performance.now()
-          setInicioDaEscuta(inicio)
-          const resultado = await reconhecedor.ouvir({ tempoMaximoMs: limiteMs })
-          if (cancelada) return
-          const tempoMs = Math.round(performance.now() - inicio)
-          if (resultado.tipo === 'fala') {
-            const textos = resultado.alternativas.map((a) => a.texto)
-            const interpretado = interpretarAlternativas(textos, selecao.modo)
-            despachar({
-              tipo: 'respondeu',
-              entendido: interpretado?.item ?? null,
-              texto: interpretado?.texto ?? textos[0] ?? null,
-              tempoMs,
-            })
-          } else if (resultado.tipo === 'silencio') {
-            despachar({ tipo: 'silencio', tempoMs })
-          } else {
-            setErroDeFala(resultado.codigo)
-          }
-        })()
+        // O botão fica disponível e o cronômetro corre (RN02). No fim do tempo: se está segurando, fecha a
+        // escuta e usa o que ouviu; se ninguém segurou, conta como silêncio (RN04).
+        setErroDeFala(null)
+        setDica('')
+        setInicioDaEscuta(performance.now())
+        relogios.push(
+          window.setTimeout(() => {
+            if (fala.situacaoRef.current === 'segurando') fala.concluir()
+            else if (fala.situacaoRef.current === 'livre') despachar({ tipo: 'silencio', tempoMs: limiteMs })
+          }, limiteMs),
+        )
         break
 
       case 'acerto':
@@ -167,11 +186,10 @@ function Jogo({ selecao }: { selecao: Selecao }) {
     return () => {
       cancelada = true
       relogios.forEach(clearTimeout)
-      if (fase.nome === 'ouvindo') reconhecedor.parar()
     }
-    // A fase muda de objeto a cada transição; `tentativaDeEscuta` reabre o microfone depois de um erro.
+    // A fase muda de objeto a cada transição; o microfone é cancelado pelo hook quando sai de "ouvindo".
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [estado.fase, tentativaDeEscuta])
+  }, [estado.fase])
 
   /** O clique libera o áudio e a voz no navegador (no iPhone, só depois de um gesto). */
   const liberarAudioEVoz = () => {
@@ -234,14 +252,8 @@ function Jogo({ selecao }: { selecao: Selecao }) {
 
         {erroDeFala && fase.nome === 'ouvindo' && (
           <Alert color="red" variant="light" title="Problema no reconhecimento de fala">
-            <Stack gap="xs" align="flex-start">
-              <Text size="sm">
-                {MENSAGEM_DE_ERRO_DA_FALA[erroDeFala] ?? `O navegador devolveu o erro "${erroDeFala}".`}
-              </Text>
-              <Button size="xs" variant="light" color="red" onClick={() => setTentativaDeEscuta((n) => n + 1)}>
-                Tentar de novo
-              </Button>
-            </Stack>
+            {MENSAGEM_DE_ERRO_DA_FALA[erroDeFala] ?? `O navegador devolveu o erro "${erroDeFala}".`} Segure o botão
+            para tentar de novo.
           </Alert>
         )}
 
@@ -249,6 +261,15 @@ function Jogo({ selecao }: { selecao: Selecao }) {
           <Alert color="red" variant="light" title="Não foi possível tocar o som">
             Confira a conexão e tente de novo mais tarde.
           </Alert>
+        )}
+
+        {emJogo && (
+          <BotaoSegurar
+            situacao={fala.situacao}
+            disponivel={fase.nome === 'ouvindo'}
+            dica={dica}
+            props={fala.propsDoBotao}
+          />
         )}
 
         {emJogo && (
@@ -302,6 +323,10 @@ function Explicacao({ carga, disponivel, pergunta, limiteMs, onComecar }: PropsD
           <List.Item>
             Responda falando o nome, por exemplo{' '}
             {pergunta === 'Que nota é essa?' ? '"dó", "fá sustenido" ou "si bemol"' : '"dó", "lá menor" ou "sol com sétima"'}.
+          </List.Item>
+          <List.Item>
+            Para responder, <strong>segure o botão "Segure para falar"</strong> enquanto fala e solte ao terminar. No
+            computador, você também pode segurar a barra de espaço.
           </List.Item>
           <List.Item>Você tem {limiteMs / 1000} segundos para responder. Pode tocar em "Ouvir de novo" quando quiser.</List.Item>
           <List.Item>Se o app não entender, você tem mais uma chance. O jogo acaba no primeiro erro.</List.Item>
@@ -357,7 +382,7 @@ function ConteudoDaFase({ estado, pergunta, limiteMs, inicioDaEscuta }: PropsDaF
       return (
         <>
           <Text size="xl" fw={700}>
-            Fale agora
+            Segure o botão e fale
           </Text>
           <Text c="dimmed">{pergunta}</Text>
           {inicioDaEscuta !== null && <Cronometro inicio={inicioDaEscuta} limiteMs={limiteMs} />}
@@ -378,7 +403,7 @@ function ConteudoDaFase({ estado, pergunta, limiteMs, inicioDaEscuta }: PropsDaF
           <Text size="xl" fw={700} c="yellow.8">
             {fase.motivo === 'silencio' ? 'Não ouvi nada' : 'Não entendi'}
           </Text>
-          <Text>Fale de novo. Esta é a sua segunda chance.</Text>
+          <Text>Segure o botão e fale de novo. Esta é a sua segunda chance.</Text>
           {fase.motivo === 'nao-entendi' && <UltimoTexto estado={estado} />}
         </>
       )

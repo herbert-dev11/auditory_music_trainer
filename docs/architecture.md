@@ -18,7 +18,7 @@ explicacao → contagem (3-2-1) → tocando → ouvindo → acerto → tocando (
 ```
 
 - **tocando**: Tone.js plays the drawn item (normal voicing; chords strum on guitar, together on piano); then `speechSynthesis` asks "Que nota é essa?" / "Que acorde é esse?". `Narrador.falar` resolves when the voice ends.
-- **ouvindo**: the microphone opens only after sound and voice have finished (RNF02); the timer runs (5 s notes / 8 s chords, RN02) and is the listening limit, so no answer counts as silence.
+- **ouvindo**: after sound and voice have finished (RNF02), the "hold to speak" button becomes available and the timer runs (5 s notes / 8 s chords, RN02). The microphone is open only while the user holds the button or the space bar (`ui/useSegurarParaFalar.ts`, [plan 013](../plans/013-segurar-para-falar.md)), at most 4 s per hold; releasing calls `ReconhecedorDeFala.concluir()`, which delivers what was heard. Taps under 0.3 s are ignored. If time runs out with nobody holding, it counts as silence; if someone is holding, the listening closes and uses what was heard.
 - **evaluating** (in `ui/Partida.tsx`): all alternatives go through `dominio/interpretacao.ts` (normalize, synonyms, first note word, accidental, longest quality match) and the first that makes sense is compared with `mesmoItem` (pitch class + quality, RN01; bare note = major in chord mode, RN03).
 - The reducer receives the random number inside the event (`tique`, `seguir`), so draws are testable; the next item never repeats the previous one.
 - The screen schedules time, plays, asks and listens, then dispatches events; the "Começar" click also unlocks audio and speech (needed on iPhone).

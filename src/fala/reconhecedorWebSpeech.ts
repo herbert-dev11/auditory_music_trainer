@@ -25,6 +25,9 @@ interface ReconhecimentoDoNavegador {
   onspeechend: (() => void) | null
   onend: (() => void) | null
   start(): void
+  /** Fecha o microfone e entrega o resultado. */
+  stop(): void
+  /** Fecha o microfone e descarta. */
   abort(): void
 }
 type ConstrutorDoReconhecimento = new () => ReconhecimentoDoNavegador
@@ -37,6 +40,8 @@ function construtor(): ConstrutorDoReconhecimento | undefined {
 
 export class ReconhecedorWebSpeech implements ReconhecedorDeFala {
   private atual: ReconhecimentoDoNavegador | null = null
+  /** Quando o usuário soltou o botão na escuta atual (para medir o tempo de resposta). */
+  private momentoDoConcluir: number | null = null
 
   get disponivel(): boolean {
     return construtor() !== undefined
@@ -46,6 +51,7 @@ export class ReconhecedorWebSpeech implements ReconhecedorDeFala {
     const Reconhecimento = construtor()
     if (!Reconhecimento) return Promise.resolve({ tipo: 'erro', codigo: 'sem-suporte' })
     this.parar()
+    this.momentoDoConcluir = null
 
     return new Promise((resolve) => {
       const reconhecimento = new Reconhecimento()
@@ -60,13 +66,18 @@ export class ReconhecedorWebSpeech implements ReconhecedorDeFala {
         if (terminou) return
         terminou = true
         clearTimeout(limite)
+        clearTimeout(relogioDeSeguranca)
         if (this.atual === reconhecimento) this.atual = null
         resolve(resultado)
       }
-      // Sem fala dentro do tempo: fecha o microfone e conta como silêncio.
+      // Janela máxima: fecha o microfone e usa o que ouviu; se o navegador não responder, conta como silêncio.
+      let relogioDeSeguranca: ReturnType<typeof setTimeout> | undefined
       const limite = setTimeout(() => {
-        reconhecimento.abort()
-        terminar({ tipo: 'silencio' })
+        reconhecimento.stop()
+        relogioDeSeguranca = setTimeout(() => {
+          reconhecimento.abort()
+          terminar({ tipo: 'silencio' })
+        }, 3000)
       }, tempoMaximoMs)
 
       reconhecimento.onspeechend = () => {
@@ -78,7 +89,9 @@ export class ReconhecedorWebSpeech implements ReconhecedorDeFala {
           texto: resultado[i].transcript.trim(),
           confianca: resultado[i].confidence,
         }))
-        const latenciaMs = fimDaFala === null ? null : Math.round(performance.now() - fimDaFala)
+        // Do fim da fala ao resultado (RNF08); sem o aviso do navegador, conta a partir de quando soltou o botão.
+        const referencia = fimDaFala ?? this.momentoDoConcluir
+        const latenciaMs = referencia === null ? null : Math.round(performance.now() - referencia)
         terminar({ tipo: 'fala', alternativas, latenciaMs })
       }
       reconhecimento.onnomatch = () => terminar({ tipo: 'fala', alternativas: [], latenciaMs: null })
@@ -94,6 +107,13 @@ export class ReconhecedorWebSpeech implements ReconhecedorDeFala {
         terminar({ tipo: 'erro', codigo: 'nao-iniciou' })
       }
     })
+  }
+
+  concluir(): void {
+    if (!this.atual) return
+    this.momentoDoConcluir = performance.now()
+    // stop() mantém a escuta viva até o navegador entregar o resultado (onresult/onend).
+    this.atual.stop()
   }
 
   parar(): void {

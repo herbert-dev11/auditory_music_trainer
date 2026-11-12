@@ -21,6 +21,7 @@ A interface feita à mão (DOM + CSS próprio) ficou feia na avaliação do auto
 - **Arquivos `.tsx` em `ui/`**; o `estilo.css` encolhe para o que o Mantine não cobre (cores do desenho).
 - **Paleta anterior mantida** (pedido do autor durante a migração): cor `madeira` de 10 tons no tema, com o marrom #8a4b14 no claro e o âmbar #e0a56b no escuro; fundo, texto, texto apagado e bordas da paleta anterior via `cssVariablesResolver`. O fundo da página é `--fundo` e o dos cartões é o `body` do Mantine (branco no claro, #22221f no escuro), como era antes. O primeiro rascunho usava o índigo do Mantine (rejeitado pelo autor).
 - **Contraste no escuro**: o `autoContrast` do Mantine calcula a cor do texto pelo tom do claro, e o texto ficava branco sobre o âmbar. Botões preenchidos e marcas de caixa e rádio recebem texto escuro (#171715) no escuro, via CSS (com `!important`, porque o Mantine põe a cor em variáveis no próprio elemento).
+- **Favicon** (pedido do autor, 2026-11-12): o logo do Vite, que veio do esqueleto do projeto, deu lugar a uma clave de sol desenhada em SVG próprio, creme sobre o marrom da paleta, conferida em 256, 32 e 16 px. Desenho próprio, então não há licença de terceiros a registrar.
 - **Responsivo primeiro** (RNF09, lembrado pelo autor): grades viram uma coluna em tela estreita; o painel do item quebra o desenho para baixo do texto. Conferido em capturas a 500 px (o Edge sem janela não desenha abaixo de ~500 px, então capturas a 390 px saem cortadas sem ser defeito).
 
 ## Dados

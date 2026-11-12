@@ -18,7 +18,7 @@ O jogo vai ser respondido só por voz (decisão do autor em 2026-11-12). Antes d
 - **`normalizar` em `dominio/normalizacao.ts`** (minúsculas, sem acentos, sem pontuação), com testes: a página compara a fala com a palavra esperada e a fase 5 reaproveita a mesma função.
 - **Página `#/teste-da-fala`**, com link discreto na tela inicial (é ferramenta de teste, não parte do jogo):
   - escolhe a palavra esperada numa lista (notas naturais, sustenidos, bemóis, acordes dos casos do [nomenclatura.md](../docs/nomenclatura.md)) ou fala livre;
-  - botão grande "Falar" (bom para o dedo no celular); o microfone só abre no toque e fecha sozinho;
+  - botão grande "Falar" (bom para o dedo no celular); o microfone só abre no toque e fecha sozinho. **Emendado pelo [plano 013](013-segurar-para-falar.md):** virou "segure para falar", nas mesmas condições do jogo;
   - mostra as alternativas, a confiança e o tempo; classifica a tentativa em "acertou na 1ª alternativa", "acertou em outra alternativa", "diferente", "silêncio" ou "erro";
   - resumo da sessão (tentativas, % de acerto, tempo médio) e histórico em tabela;
   - **exporta em CSV** (copiar ou baixar) com o navegador, a palavra esperada, o resultado, o tempo e as alternativas: é a matéria-prima da lista de sinônimos da fase 5 e da medição do RNF07.
