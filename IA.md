@@ -12,16 +12,17 @@ Keep changes small, scoped, and consistent with what already exists.
 
 ## Stack & layout
 
-Describe here on repo creation: language, framework, layers (example: routes → controllers → services → data). See `docs/architecture.md`.
+TypeScript (`strict`) + Vite, no UI framework; static SPA published on GitHub Pages. Audio with Tone.js, music theory with Tonal, speech with the browser's Web Speech API and `speechSynthesis`. Tests with Vitest. See `docs/architecture.md`.
+
+Layers under `src/`: `ui/` → `exercicio/` (game state machine) → `dominio/` (notes, chords, spoken names, speech interpretation). `audio/`, `fala/` and `dados/` are adapters injected into the game. `dominio/` and `exercicio/` stay pure: no Tone.js, no Web Speech, no DOM, no `localStorage`.
 
 ## Commands
 
-Describe here on repo creation. Minimum contract:
-
-- install deps
-- run dev
-- run tests (`npm test` or equivalent)
-- typecheck/lint
+- install deps: `npm install`
+- run dev: `npm run dev` (http://localhost:5173)
+- run tests: `npm test` (once) · `npm run test:watch` · `npm run coverage`
+- typecheck: `npm run typecheck` · lint: `npm run lint` (pending, plan 001)
+- build: `npm run build`
 
 ## Hard rules — do not break these
 
@@ -50,3 +51,14 @@ See `docs/testing.md`. The goal is confidence to ship, not coverage numbers. Tes
 - Thin edges (routes/controllers), domain rules in services, data access isolated.
 - Types/contracts defined once, never hand-written per call site; frontend reuses backend contracts, never rewrites shapes.
 - Error shape: `{ error: "codigo_snake", details?: ... }`.
+
+### Project conventions
+
+- Code identifiers and comments in Portuguese (the music domain is pt-BR).
+- Notes are compared by pitch class (0–11), never by text (RN01). See `docs/nomenclatura.md`.
+- `docs/nomenclatura.md` (spoken pt-BR names, domain rules) and `docs/licencas.md` (license inventory for the thesis) are kept in Portuguese.
+- Only audio samples with a free license; record the source in `CREDITS.md`. Nothing from sites without an explicit license.
+- Every new dependency or sound goes into `docs/licencas.md` in the same PR, with the license checked at the source.
+- One branch per task, Conventional Commits (`feat:`, `fix:`, `test:`, `docs:`, `chore:`), PR to `main`, merge only with green CI.
+- No AI attribution in commits or PRs (no `Co-Authored-By` trailers, no "Generated with" lines).
+- Working mode: the author writes the code; AI agents guide, review and help with tests. No full implementations without an explicit request.

@@ -1,13 +1,28 @@
 {
-  "name": "TODO-nome-do-repo",
+  "name": "auditory-music-trainer",
+  "private": true,
   "version": "0.1.0",
-  "description": "TODO",
+  "description": "Treinador musical auditivo com resposta por voz: toca notas e acordes de violão e reconhece o nome falado",
+  "type": "module",
   "scripts": {
-    "dev": "TODO",
-    "start": "TODO",
-    "build": "TODO",
-    "typecheck": "TODO",
-    "test": "TODO"
+    "dev": "vite",
+    "start": "vite preview",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
-  "license": "ISC"
+  "dependencies": {
+    "tonal": "^6.5.1",
+    "tone": "^15.1.22"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^5.1.0",
+    "typescript": "~7.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  },
+  "license": "UNLICENSED"
 }

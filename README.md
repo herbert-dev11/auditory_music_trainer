@@ -1,6 +1,28 @@
-# modelo
+# Treinador Musical Auditivo
 
-Template de repositório da organização: regras, estrutura e documentos que **todo repo deve seguir**. Criado de "Use this template", depois preencher `docs/PROJECT.md` e esta seção.
+Aplicação web de treino auditivo com **resposta por voz**: o app toca uma nota ou um acorde de violão, pergunta "Que nota é essa?" e você responde falando ("dó", "lá menor", "dó sustenido menor"). O jogo segue até o primeiro erro; a pontuação é a sequência de acertos.
+
+- Produto, requisitos e roteiro: [docs/PROJECT.md](docs/PROJECT.md)
+- Cifras e nomes falados: [docs/nomenclatura.md](docs/nomenclatura.md)
+- Arquitetura: [docs/architecture.md](docs/architecture.md)
+- Licenças e créditos: [docs/licencas.md](docs/licencas.md)
+
+## Como rodar
+
+Requer Node.js 24 e Chrome ou Edge (reconhecimento de fala).
+
+```bash
+npm install
+npm run dev
+```
+
+Testes: `npm test`. Detalhes em [docs/getting-started.md](docs/getting-started.md).
+
+**Status:** fase 0 (configuração do projeto), [plano 001](plans/001-configuracao-do-projeto.md).
+
+---
+
+Este repositório segue o template da organização: regras, estrutura e documentos que **todo repo deve seguir**.
 
 ## O que todo repo tem
 
