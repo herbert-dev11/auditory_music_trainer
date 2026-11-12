@@ -71,7 +71,7 @@ usuario 1───* token_renovacao
 | `usuario` | `id` uuid PK; `email` único, minúsculas; `apelido` 2–30; `senha_hash` argon2id; `criado_em`, `atualizado_em` |
 | `token_renovacao` | `id`; `usuario_id` FK cascade; `token_hash`; `expira_em` (30 dias); `revogado_em` nulo enquanto válido; `criado_em` |
 | `preferencia` | `usuario_id` PK/FK cascade; `selecao` jsonb (tipo `Selecao`); `atualizado_em` |
-| `partida` | `id` uuid **do front**; `usuario_id` FK cascade; `instrumento` (`violao`); `modo` (`nota`/`acorde`); `selecao` jsonb; `sequencia`; `encerrada_por` (`erro`/`parou`); `modo_resposta` (`voz`/`botoes`); `iniciada_em`, `encerrada_em` (dispositivo); `criado_em` (servidor) |
+| `partida` | `id` uuid **do front**; `usuario_id` FK cascade; `instrumento` (`violao`/`piano`); `modo` (`nota`/`acorde`); `selecao` jsonb; `sequencia`; `encerrada_por` (`erro`/`parou`); `modo_resposta` (`voz`/`botoes`); `iniciada_em`, `encerrada_em` (dispositivo); `criado_em` (servidor) |
 | `resposta` | `id`; `partida_id` FK cascade; `ordem`; `tentativa` 1 ou 2 (RN04); `item_esperado` (cifra canônica); `item_respondido` (nulo em "não entendi"); `resultado` (`acerto`/`erro`/`nao_entendi`); `tempo_ms`; `ouviu_de_novo` |
 
 Índices: `partida (usuario_id, encerrada_em desc)`; `resposta (partida_id, ordem)`.
@@ -79,12 +79,13 @@ usuario 1───* token_renovacao
 Contratos compartilhados (já usados pelo front desde a fase 3, em `src/contratos/`):
 
 ```ts
-export type Instrumento = "violao";
+export type Instrumento = "violao" | "piano"; // "piano" entrou com o plano 004 (PROJECT.md v0.3)
 export type ModoDeJogo = "nota" | "acorde";
 export type Raiz = "naturais" | "sustenidos";
-export type TipoDeAcorde = "maior" | "menor" | "setima";
+// Emendado pelo plano 009: no lugar de TipoDeAcorde ("maior" | "menor" | "setima"), as 5 qualidades.
+export type Qualidade = "" | "m" | "7" | "m7" | "7M";
 
-export interface Selecao { instrumento: Instrumento; modo: ModoDeJogo; raizes: Raiz[]; tipos: TipoDeAcorde[] }
+export interface Selecao { instrumento: Instrumento; modo: ModoDeJogo; raizes: Raiz[]; qualidades: Qualidade[] }
 export type ResultadoDaResposta = "acerto" | "erro" | "nao_entendi";
 export interface Resposta { ordem: number; tentativa: 1 | 2; itemEsperado: string; itemRespondido: string | null; resultado: ResultadoDaResposta; tempoMs: number; ouviuDeNovo: number }
 export interface Partida { id: string; selecao: Selecao; sequencia: number; encerradaPor: "erro" | "parou"; modoResposta: "voz" | "botoes"; iniciadaEm: string; encerradaEm: string; respostas: Resposta[] }

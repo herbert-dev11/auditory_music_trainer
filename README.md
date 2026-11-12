@@ -6,6 +6,7 @@ Aplicação web de treino auditivo com **resposta por voz**: o app toca uma nota
 - Cifras e nomes falados: [docs/nomenclatura.md](docs/nomenclatura.md)
 - Arquitetura: [docs/architecture.md](docs/architecture.md)
 - Licenças e créditos: [docs/licencas.md](docs/licencas.md)
+- Pesquisa das fontes de som (base para o relatório): [docs/pesquisa-de-sons.md](docs/pesquisa-de-sons.md)
 
 ## Como rodar
 
@@ -18,7 +19,20 @@ npm run dev
 
 Testes: `npm test`. Detalhes em [docs/getting-started.md](docs/getting-started.md).
 
-**Status:** fase 0 (configuração do projeto), [plano 001](plans/001-configuracao-do-projeto.md).
+## Licença
+
+O **código** deste projeto terá licença própria, ainda a decidir (sugestão: MIT; pendência do [plano 001](plans/001-configuracao-do-projeto.md)). Até lá, o `package.json` diz `UNLICENSED`.
+
+Os **sons** não são cobertos pela licença do código: continuam sob a licença de seus autores.
+
+| Sons | Autor | Licença |
+|---|---|---|
+| Violão nylon (`public/samples/guitar-nylon/`) | quartertone (Freesound), reempacotado por Nicholaus P. Brosowsky (tonejs-instruments) | CC BY 3.0 |
+| Piano (`public/samples/piano/`) | Alexander Holm (Salamander Grand Piano) | CC BY 3.0 |
+
+Quem reutilizar os sons precisa dar crédito aos autores, conforme a CC BY. Créditos completos em [CREDITS.md](CREDITS.md); bibliotecas e versões em [docs/licencas.md](docs/licencas.md).
+
+**Status:** fase 2 (tela inicial, navegação e seleção do jogo), [plano 009](plans/009-tela-inicial-e-selecao.md). Fase 1 (som de violão e de piano; biblioteca com desenho, demonstração nota por nota, anúncio por voz, tema claro/escuro, acordes abertos e modo simplificado) nos planos [003](plans/003-som-do-violao-e-biblioteca.md) a [008](plans/008-acordes-abertos-pestana-e-simplificado.md). Próximo: o jogo (fase 3). Pendências da fase 0 no [plano 001](plans/001-configuracao-do-projeto.md).
 
 ---
 

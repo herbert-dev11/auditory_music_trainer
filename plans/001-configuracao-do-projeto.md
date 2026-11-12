@@ -44,7 +44,7 @@ Nenhuma tela nova: `src/main.ts` só escreve o título na página.
 - [ ] ESLint + Prettier configurados, com script `lint` e passo no CI (entram em `licencas.md` no mesmo PR)
 - [ ] CI verde no GitHub
 - [ ] Licença do código decidida e arquivo `LICENSE` criado (sugestão: MIT)
-- [ ] `CREDITS.md` criado quando o primeiro som entrar (fase 1)
+- [x] `CREDITS.md` criado quando o primeiro som entrar (fase 1, [plano 003](003-som-do-violao-e-biblioteca.md))
 
 ## Histórico
 
