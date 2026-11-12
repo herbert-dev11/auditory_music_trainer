@@ -10,7 +10,9 @@ Aplicação web de treino auditivo com **resposta por voz**: o app toca uma nota
 
 ## Como rodar
 
-Requer Node.js 24 e Chrome ou Edge (reconhecimento de fala).
+Requer Node.js 24. Para a voz: Chrome (computador ou Android) ou iPhone.
+
+App publicado (HTTPS, necessário para o microfone): https://herbert-dev11.github.io/auditory_music_trainer/
 
 ```bash
 npm install

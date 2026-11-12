@@ -4,7 +4,7 @@ Product scope and requirement IDs (RF, RNF, RN) live in [PROJECT.md](PROJECT.md)
 
 ## Processes
 
-The MVP is a **static single-page app** that runs entirely in the browser. There is no server: it is built by Vite and published on GitHub Pages (HTTPS, which the microphone requires).
+The MVP is a **static single-page app** that runs entirely in the browser. There is no server: it is built by Vite and published on GitHub Pages (HTTPS, which the microphone requires) by `.github/workflows/pages.yml` on every push to `main`. The build uses relative URLs (`base: './'`), so it works under `https://<user>.github.io/auditory_music_trainer/` without hard-coding the repository name ([plan 012](../plans/012-teste-da-fala.md)).
 
 Main flow of one game (UC02), as a state machine:
 
@@ -26,7 +26,7 @@ Browser APIs used:
 | API | Use | Caveat |
 |---|---|---|
 | Web Audio API (via Tone.js) | Play samples | Audio unlocks only after a user gesture (`Tone.start()` on a click) |
-| Web Speech API (`SpeechRecognition`) | Recognize the spoken answer | Chrome/Edge only; audio is processed by the browser vendor's servers (RNF04); needs internet |
+| Web Speech API (`SpeechRecognition`, `webkit` prefix on Safari) | Recognize the spoken answer | Targets: Chrome (Google's service) and iPhone (Apple's service; every iOS browser uses WebKit). Firefox has no recognition service. Audio is processed by the vendor (RNF04); needs internet ([plan 012](../plans/012-teste-da-fala.md)) |
 | `speechSynthesis` | Ask the question | A pt-BR voice may not be installed; check `getVoices()` early |
 | `getUserMedia` | Microphone permission | HTTPS or `localhost` only; audio is never recorded (RNF03) |
 
@@ -69,7 +69,7 @@ src/
 Rules:
 
 1. `dominio/` and `exercicio/` import nothing from `audio/`, `fala/`, `ui/`, nor any browser API. This is what makes them fully testable (RNF10).
-2. Speech recognition is behind the `ReconhecedorDeFala` interface, so Vosk can replace Web Speech later and tests can inject a fake.
+2. Speech recognition is behind the `ReconhecedorDeFala` interface (`fala/reconhecedor.ts`; Web Speech implementation in `fala/reconhecedorWebSpeech.ts`), so Vosk can replace Web Speech later and tests can inject a fake. A listen resolves to `fala` (up to 5 alternatives with confidence, plus the time from end of speech to result), `silencio` or `erro` (the browser's code).
 3. Screens only know the repository interfaces in `dados/`, never `localStorage` directly. When the back-end arrives, `...Api` implementations replace `...Local` ones ([plan 002](../plans/002-back-end.md)).
 4. Types in `contratos/` are defined once and reused; never hand-written per call site.
 

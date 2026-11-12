@@ -70,7 +70,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 
 | ID | Requisito | Prior. |
 |---|---|---|
-| RNF01 | Voz no Chrome e no Edge (desktop) recentes; nos outros navegadores, só com botões | M |
+| RNF01 | Voz no Chrome (computador e Android) e no iPhone (motor do Safari, reconhecimento da Apple), versões recentes; nos outros navegadores, aviso de que não há reconhecimento de fala ([plano 012](../plans/012-teste-da-fala.md)) | M |
 | RNF02 | O microfone nunca fica aberto enquanto o som ou a voz sintética tocam | M |
 | RNF03 | Não gravar nem armazenar o áudio da voz do usuário | M |
 | RNF04 | Avisar que, na Web Speech API, o áudio da fala é processado pelo provedor do navegador (transparência, LGPD) | M |
@@ -166,7 +166,7 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 | 1b | Piano como segundo instrumento, com abas na biblioteca; anúncio do nome por voz; desenho e demonstração nota por nota; tema claro e escuro; acordes abertos, pestana e modo simplificado | RF05 (som), RF16, RF22, RF25–RF28 | [004](../plans/004-piano.md), [005](../plans/005-anuncio-por-voz.md), [006](../plans/006-demonstracao-nota-por-nota.md), [007](../plans/007-tema-claro-e-escuro.md), [008](../plans/008-acordes-abertos-pestana-e-simplificado.md) |
 | 2 | Tela inicial, navegação e seleção por instrumento, modo, raiz e tipo | RF01, RF02, RN07 | [009](../plans/009-tela-inicial-e-selecao.md) |
 | 3 | Jogo completo **com botões**: explicação, contagem, sorteio, cronômetro, "Ouvir de novo", fim no erro, resultado | RF03, RF04, RF05, RF08, RF10, RF12–RF15, RN02, RN05, RN06 | — |
-| 4 | Página isolada de teste da fala: mostrar transcrições e alternativas, registrar os resultados | RF09, RNF01 | — |
+| 4 | Página isolada de teste da fala: mostrar transcrições e alternativas, registrar os resultados; app publicado no GitHub Pages para testar no celular | RF09, RNF01, RNF03, RNF04 | [012](../plans/012-teste-da-fala.md) |
 | 5 | Interpretação da fala, com TDD a partir de [nomenclatura.md](nomenclatura.md) | RF10 (voz), RN01, RN03, RN08 | — |
 | 6 | Jogo por voz: voz sintética, microfone, segunda chance | RF06, RF07, RF09, RF11, RN04, RNF02–RNF04 | — |
 | B0–B6 | Back-end (pós-MVP): contas, histórico, estatísticas, sincronização, LGPD | RF23 | [002](../plans/002-back-end.md) (rascunho) |
@@ -189,6 +189,7 @@ O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógic
 
 | Assunto | v0.2 | v0.3 (atual) |
 |---|---|---|
+| Navegadores com voz (RNF01) | Chrome e Edge no computador | Chrome (computador e Android) e iPhone; os outros mostram aviso (decisão do autor; o Firefox não tem serviço de reconhecimento) |
 | Instrumentos | Só violão; piano e teclado como RF22, desejável, fora do MVP | Piano entra no MVP (RF22, M); teclado e outros passam para o RF24 (C). Motivo: o timbre dos acordes de violão montados com amostras isoladas soa artificial, e o piano não tem essa limitação ([pesquisa-de-sons.md](pesquisa-de-sons.md)) |
 | Navegação (RF01, UC01) | Violão → Notas / Acordes | Tela inicial (Iniciar jogo, Biblioteca, Teoria, Entrar / Sair desabilitado); em "Iniciar jogo", Violão / Piano → Notas / Acordes → raízes e tipos |
 | Tipos de acorde (RF02) | Maior, menor, sétima (7, m7 e 7M juntos) | As 5 qualidades separadas; notas e acordes não se misturam na mesma partida |
