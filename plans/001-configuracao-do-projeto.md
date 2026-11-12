@@ -9,7 +9,7 @@ Não há projeto executável: ninguém consegue rodar o app, os testes nem o CI.
 ## Decisões
 
 - **Vite + TypeScript sem framework**: o MVP tem poucas telas; o foco é áudio e lógica. React fica para se as telas crescerem.
-- **Framework de UI já no começo (rejeitado)**: custo de aprendizado sem ganho no MVP.
+- **Framework de UI já no começo (rejeitado)**: custo de aprendizado sem ganho no MVP. **Revisto em 2026-11-12:** com as telas crescendo, a interface passou para React + Mantine ([plano 010](010-react-e-mantine.md)).
 - **TypeScript 7 com `strict`**: tipos fortes no domínio musical (`"maior" | "menor"`).
 - **Tone.js + Tonal**: Tone toca os samples (`Sampler`); Tonal faz as contas de teoria (MIDI, classe de altura, notas do acorde). Ambos MIT.
 - **smplr (rejeitado por enquanto)**: alternativa ao `Sampler`; só entra se o `Sampler` não servir.
