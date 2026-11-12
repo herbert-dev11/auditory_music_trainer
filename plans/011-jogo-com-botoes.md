@@ -13,10 +13,10 @@ A seleção do jogo existe ([plano 009](009-tela-inicial-e-selecao.md)) e a fala
 
 ## Decisões
 
-- **Resposta só por voz** (decisão do autor). Na tela do jogo há só dois botões: **"Ouvir de novo"** e **"Parar"** (que volta ao resultado); a barra comum continua com "← Início". Em navegador sem reconhecimento de fala, a tela avisa e não começa (RNF01: Chrome e iPhone). O RF15 (botões como reserva) saiu do PROJECT.md.
+- **Resposta só por voz** (decisão do autor). Na tela do jogo há só dois botões: **"Ouvir de novo"** e **"Parar"** (mais o botão de segurar para falar, do [plano 013](013-segurar-para-falar.md)) (que volta ao resultado); a barra comum continua com "← Início". Em navegador sem reconhecimento de fala, a tela avisa e não começa (RNF01: Chrome e iPhone). O RF15 (botões como reserva) saiu do PROJECT.md.
 - **Máquina de estados pura em `exercicio/partida.ts`**: `(estado, evento) → estado`, sem relógio, som, voz nem DOM. Fases: `explicacao → contagem → tocando → ouvindo → acerto | nao-entendi | erro → … → resultado`. O sorteio recebe o número aleatório no próprio evento, para os testes serem previsíveis.
 - **A tela cuida do tempo, do som e da voz** (`ui/Partida.tsx`): agenda a contagem, toca pelo `Tocador`, faz a pergunta pelo `Narrador`, abre o microfone pelo `ReconhecedorDeFala`, interpreta e manda os eventos para a máquina.
-- **Ordem de cada rodada (UC02, RNF02)**: toca o som → espera acabar → pergunta "Que nota é essa?" (ou "Que acorde é esse?") → espera a voz terminar → só então abre o microfone e começa o cronômetro (RF07). O `Narrador.falar` passou a avisar quando termina.
+- **Ordem de cada rodada (UC02, RNF02)**: toca o som → espera acabar → pergunta "Que nota é essa?" (ou "Que acorde é esse?") → espera a voz terminar → só então abre o microfone e começa o cronômetro (RF07). O `Narrador.falar` passou a avisar quando termina. **Emendado pelo [plano 013](013-segurar-para-falar.md):** depois da pergunta, o microfone não abre sozinho; fica disponível o botão "segure para falar" (ou a barra de espaço), e o microfone só abre enquanto a pessoa segura.
 - **Cronômetro de 5 s para notas e 8 s para acordes (RN02)**, com barra que esvazia e o tempo em texto. O tempo é o limite da escuta: se ninguém falar, conta como silêncio.
 - **Segunda chance (RN04)**: "não entendi" (nenhuma alternativa vira nota) ou silêncio avisam "Não entendi, fale de novo" e reabrem o microfone, sem tocar de novo. Na segunda vez, encerra como erro. "Não entendi" não é erro.
 - **Resposta entendida e errada encerra na hora (RN05)**: "Errou! Era dó maior", a voz diz o nome certo, o som certo toca mais uma vez (E1) e vai para o resultado.
@@ -70,3 +70,4 @@ Tela substituída: **Partida** (`#/jogo/partida`), com as fases explicação, co
 
 - 2026-11-12: rascunho como "jogo com botões".
 - 2026-11-12: emendado depois da revisão do autor: só voz, botão de ouvir de novo e de voltar, aviso no tempo esgotado, sem repetir, som normal. Passa a cobrir as fases 3, 5 (primeira versão) e 6.
+- 2026-11-12: depois do teste do autor (microfone com ruído), o microfone passou a abrir só enquanto se segura o botão ([plano 013](013-segurar-para-falar.md)).

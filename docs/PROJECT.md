@@ -43,7 +43,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 | RF04 | Contagem regressiva de 3 segundos antes do primeiro exercício | M | ✔ |
 | RF05 | Sortear e tocar uma nota ou acorde entre os itens selecionados (no violão, acorde com voicing de violão e cordas em sequência; no piano, notas do acorde juntas) | M | ✔ |
 | RF06 | Perguntar "Que nota é essa?" com voz sintética | M | ✔ |
-| RF07 | Ativar o microfone só depois que o som e a pergunta terminarem | M | ✔ |
+| RF07 | Ativar o microfone só depois que o som e a pergunta terminarem, e só enquanto o usuário segura o botão "segure para falar" (ou a barra de espaço no computador) ([plano 013](../plans/013-segurar-para-falar.md)) | M | ✔ |
 | RF08 | Cronômetro visível com o tempo de resposta (RN02) | M | ✔ |
 | RF09 | Reconhecer a fala e mostrar o que o sistema entendeu ("Entendi: dó") | M | ✔ |
 | RF10 | Comparar a resposta com o item sorteado e mostrar acerto ou erro, com a resposta certa | M | ✔ |
@@ -125,8 +125,8 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 4. O sistema faz a contagem regressiva: 3, 2, 1.
 5. O sistema sorteia um item da seleção e toca o som.
 6. O sistema pergunta "Que nota é essa?" com voz sintética.
-7. O sistema ativa o microfone e inicia o cronômetro (RN02).
-8. O usuário fala a resposta.
+7. O sistema libera o botão "segure para falar" e inicia o cronômetro (RN02).
+8. O usuário segura o botão, fala a resposta e solta; o microfone só fica aberto enquanto ele segura.
 9. O sistema mostra o que entendeu ("Entendi: dó").
 10. O sistema compara com o item sorteado (RN01, RN03) e mostra **acerto**.
 11. O sistema soma 1 à sequência e volta ao passo 5.
@@ -191,6 +191,7 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 |---|---|---|
 | Navegadores com voz (RNF01) | Chrome e Edge no computador | Chrome (computador e Android) e iPhone; os outros mostram aviso (decisão do autor; o Firefox não tem serviço de reconhecimento) |
 | Resposta no jogo (RF15) | Por voz, com botões como reserva sem microfone | Só por voz; no jogo, só os botões "Ouvir de novo" e "Parar" (decisão do autor) |
+| Microfone (RF07) | Abre sozinho depois da pergunta | Abre só enquanto o usuário segura o botão ou a barra de espaço, para captar menos ruído |
 | Instrumentos | Só violão; piano e teclado como RF22, desejável, fora do MVP | Piano entra no MVP (RF22, M); teclado e outros passam para o RF24 (C). Motivo: o timbre dos acordes de violão montados com amostras isoladas soa artificial, e o piano não tem essa limitação ([pesquisa-de-sons.md](pesquisa-de-sons.md)) |
 | Navegação (RF01, UC01) | Violão → Notas / Acordes | Tela inicial (Iniciar jogo, Biblioteca, Teoria, Entrar / Sair desabilitado); em "Iniciar jogo", Violão / Piano → Notas / Acordes → raízes e tipos |
 | Tipos de acorde (RF02) | Maior, menor, sétima (7, m7 e 7M juntos) | As 5 qualidades separadas; notas e acordes não se misturam na mesma partida |
