@@ -9,6 +9,7 @@ export const ROTAS = {
   '#/jogo': 'Novo jogo',
   '#/jogo/partida': 'Partida',
   '#/teoria': 'Teoria musical',
+  '#/teste-da-fala': 'Teste da fala',
 } as const
 
 export type Rota = keyof typeof ROTAS
