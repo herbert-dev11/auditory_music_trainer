@@ -15,7 +15,7 @@ import {
   Text,
   Title,
 } from '@mantine/core'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import {
   classificar,
   nomeDoNavegador,
@@ -25,8 +25,11 @@ import {
   type ClasseDaTentativa,
   type Tentativa,
 } from '../exercicio/testeDaFala'
+import type { ResultadoDaEscuta } from '../fala/reconhecedor'
+import { BotaoSegurar } from './BotaoSegurar'
 import { TituloDaTela } from './Comum'
 import { useDependencias } from './contexto'
+import { useSegurarParaFalar } from './useSegurarParaFalar'
 
 const LIVRE = '(fala livre)'
 
@@ -73,23 +76,16 @@ export function TesteDaFala() {
   const { reconhecedor } = useDependencias()
   const navegador = useMemo(() => nomeDoNavegador(navigator.userAgent), [])
   const [esperado, setEsperado] = useState('dó')
-  const [ouvindo, setOuvindo] = useState(false)
   const [tentativas, setTentativas] = useState<Tentativa[]>([])
   const [aviso, setAviso] = useState('')
-
-  // Ao sair da página, o microfone fecha.
-  useEffect(() => () => reconhecedor.parar(), [reconhecedor])
 
   const ultima = tentativas[0]
   const resumo = resumir(tentativas)
 
-  const falar = async () => {
-    setOuvindo(true)
-    setAviso('')
+  /** Resultado de uma escuta (ao soltar o botão, plans/013). */
+  const registrar = (resultado: ResultadoDaEscuta) => {
+    if (resultado.tipo === 'erro' && resultado.codigo === 'aborted') return
     const palavra = esperado === LIVRE ? null : esperado
-    const resultado = await reconhecedor.ouvir()
-    setOuvindo(false)
-
     const base = { numero: tentativas.length + 1, navegador, esperado: palavra }
     const nova: Tentativa =
       resultado.tipo === 'fala'
@@ -106,10 +102,14 @@ export function TesteDaFala() {
     setTentativas((anteriores) => [nova, ...anteriores])
   }
 
-  const parar = () => {
-    reconhecedor.parar()
-    setOuvindo(false)
-  }
+  // Segurar para falar, nas mesmas condições do jogo (plans/013).
+  const fala = useSegurarParaFalar({
+    reconhecedor,
+    ativo: reconhecedor.disponivel,
+    onResultado: registrar,
+    onToqueCurto: () => setAviso('Segure o botão enquanto fala e solte ao terminar.'),
+  })
+  const ouvindo = fala.situacao !== 'livre'
 
   const csv = () => paraCsv([...tentativas].reverse())
   const copiar = async () => {
@@ -135,7 +135,8 @@ export function TesteDaFala() {
         <div>
           <TituloDaTela>Teste da fala</TituloDaTela>
           <Text c="dimmed">
-            Escolha uma palavra, toque em Falar e diga a palavra. A página mostra o que o navegador entendeu.
+            Escolha uma palavra, segure o botão enquanto fala e solte ao terminar. A página mostra o que o navegador
+            entendeu.
           </Text>
         </div>
 
@@ -171,19 +172,13 @@ export function TesteDaFala() {
               ))}
             </NativeSelect>
 
-            {ouvindo ? (
-              <Button size="xl" fullWidth color="red" variant="light" onClick={parar}>
-                Ouvindo... fale agora (toque para parar)
-              </Button>
-            ) : (
-              <Button size="xl" fullWidth onClick={falar} disabled={!reconhecedor.disponivel}>
-                Falar
-              </Button>
-            )}
-
-            <Text size="sm" role="status" c="dimmed" mih={20}>
-              {ouvindo ? `Diga: "${esperado === LIVRE ? 'qualquer coisa' : esperado}"` : aviso}
-            </Text>
+            <BotaoSegurar
+              situacao={fala.situacao}
+              disponivel={reconhecedor.disponivel}
+              dica={ouvindo ? `Diga: "${esperado === LIVRE ? 'qualquer coisa' : esperado}"` : aviso}
+              props={fala.propsDoBotao}
+              textoIndisponivel="Sem reconhecimento de fala"
+            />
 
             {ultima && !ouvindo && <ResultadoDaTentativa tentativa={ultima} />}
           </Stack>

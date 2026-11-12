@@ -27,6 +27,8 @@ export interface ReconhecedorDeFala {
   readonly disponivel: boolean
   /** Abre o microfone, espera uma fala e fecha. Precisa vir de um gesto do usuário na primeira vez. */
   ouvir(opcoes?: OpcoesDeEscuta): Promise<ResultadoDaEscuta>
+  /** Fecha o microfone e entrega o que foi ouvido até agora (segurar para falar: ao soltar, plans/013). */
+  concluir(): void
   /** Fecha o microfone e descarta a escuta em andamento. */
   parar(): void
 }
