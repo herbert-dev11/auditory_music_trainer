@@ -34,6 +34,10 @@ Consulta no registro do npm em 2026-11-11. Instalação em 2026-11-11: versões 
 | `typescript` | 7.0.2 | Apache-2.0 | Compilação | Não (ferramenta) | em uso |
 | `vitest` | 5.1.0 | MIT | Testes | Não (ferramenta) | em uso |
 | `@vitest/coverage-v8` | 5.1.0 | MIT | Cobertura de testes (RNF10) | Não (ferramenta) | em uso |
+| `react`, `react-dom` | 19.3.1 | MIT | Interface em componentes ([plano 010](../plans/010-react-e-mantine.md)) | Sim | em uso |
+| `@mantine/core`, `@mantine/hooks` | 9.8.0 | MIT | Componentes prontos, tema claro/escuro | Sim | em uso |
+| `@vitejs/plugin-react` | 6.3.0 | MIT | React no Vite (Fast Refresh) | Não (ferramenta) | em uso |
+| `@types/react`, `@types/react-dom` | 19.3.0 | MIT | Tipos do React | Não (ferramenta) | em uso |
 | `eslint` | 10.14.0 | MIT | Padrão de código | Não (ferramenta) | planejado |
 | `prettier` | 3.10.0 | MIT | Formatação | Não (ferramenta) | planejado |
 | `smplr` | 1.2.0 | MIT | Alternativa ao `Sampler` (só se for usado) | Sim | alternativa |
@@ -81,7 +85,7 @@ Não têm licença a cumprir, mas têm consequências de privacidade.
 >
 > **Piano:** "Salamander Grand Piano", de Alexander Holm, licença CC BY 3.0. Versão em mp3 do repositório Tonejs/audio, usada sem modificação.
 >
-> **Bibliotecas:** Tone.js (MIT), Tonal (MIT) e as ferramentas listadas em `docs/licencas.md`.
+> **Bibliotecas:** Tone.js (MIT), Tonal (MIT), React (MIT), Mantine (MIT) e as ferramentas listadas em `docs/licencas.md`.
 
 ## Checklist de publicação
 
