@@ -1,469 +1,196 @@
-/* Tema (plans/007): claro por padrão; escuro quando o sistema pede e o usuário não escolheu
-   "claro" (data-tema), ou quando escolheu "escuro". As duas listas escuras são iguais. */
-:root {
-  color-scheme: light;
-  --fundo: #fafaf7;
-  --texto: #1d1d1b;
-  --suave: #5b5b57;
-  --cartao: #ffffff;
-  --borda: #d6d6d0;
-  --destaque: #8a4b14;
-  --marca: #e9c9a6;
-  --tecla-branca: #ffffff;
-  --tecla-preta: #2a2a27;
-  --tecla-preta-marcada: #a8693a;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  line-height: 1.5;
-}
+/* Só o que o Mantine não cobre (plans/010). Cores vêm das variáveis do tema do Mantine,
+   então acompanham o claro e o escuro sozinhas. */
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-tema='claro']) {
-    color-scheme: dark;
-    --fundo: #171715;
-    --texto: #ececea;
-    --suave: #a9a9a3;
-    --cartao: #22221f;
-    --borda: #3a3a35;
-    --destaque: #e0a56b;
-    --marca: #6b4a2c;
-    --tecla-branca: #d9d9d4;
-    --tecla-preta: #0e0e0d;
-    --tecla-preta-marcada: #8a5530;
-  }
-}
-
-:root[data-tema='escuro'] {
-  color-scheme: dark;
-  --fundo: #171715;
-  --texto: #ececea;
-  --suave: #a9a9a3;
-  --cartao: #22221f;
-  --borda: #3a3a35;
-  --destaque: #e0a56b;
-  --marca: #6b4a2c;
-  --tecla-branca: #d9d9d4;
-  --tecla-preta: #0e0e0d;
-  --tecla-preta-marcada: #8a5530;
-}
-
-* {
-  box-sizing: border-box;
-}
-
+/* Fundo da página da paleta anterior; os cartões usam --mantine-color-body (ver ui/tema.tsx). */
 body {
-  margin: 0;
-  background: var(--fundo);
-  color: var(--texto);
+  background-color: var(--fundo);
 }
 
-main {
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 24px 16px 48px;
+/* No escuro, texto e marcas sobre o âmbar ficam escuros (contraste). O Mantine põe a cor do texto
+   em variáveis no próprio elemento, então só `!important` vence aqui. */
+[data-mantine-color-scheme='dark'] .mantine-Button-root[data-variant='filled']:not(:disabled),
+[data-mantine-color-scheme='dark'] .mantine-CheckboxIndicator-icon,
+[data-mantine-color-scheme='dark'] .mantine-RadioIndicator-icon {
+  color: var(--mantine-primary-color-contrast) !important;
 }
 
-h1 {
-  margin: 0 0 4px;
-}
-
-h2 {
-  margin: 32px 0 12px;
-  font-size: 1.15rem;
-}
-
-a {
-  color: var(--destaque);
-}
-
-.status {
-  min-height: 1.5em;
-  color: var(--suave);
-}
-
-.grade {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: wait;
-  opacity: 0.55;
-}
-
-button:focus-visible {
-  outline: 3px solid var(--destaque);
-  outline-offset: 2px;
-}
-
-.item {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 10px 12px;
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-  background: var(--cartao);
-  color: var(--texto);
-  text-align: left;
-}
-
-.item:not(:disabled):hover {
-  border-color: var(--destaque);
-}
-
-.cifra {
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.nome {
-  color: var(--suave);
-  font-size: 0.9rem;
-}
-
-/* --- Barra comum e navegação (plans/009) --- */
-
-.barra {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  max-width: 960px;
-  margin: 0 auto;
-  padding: 12px 16px 0;
-}
-
-.barra .alternar {
-  margin-left: auto;
-}
-
-.voltar {
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.voltar[hidden] {
-  display: none;
-}
-
-h1:focus {
+.titulo-da-tela:focus {
   outline: none;
 }
 
-h1:focus-visible {
-  outline: 3px solid var(--destaque);
+.titulo-da-tela:focus-visible {
+  outline: 3px solid var(--mantine-primary-color-filled);
   outline-offset: 4px;
-}
-
-a.secundario,
-a.primario {
-  display: inline-block;
-  text-decoration: none;
-}
-
-.primario {
-  padding: 12px 28px;
-  border: 0;
-  border-radius: 8px;
-  background: var(--destaque);
-  color: var(--fundo);
-  font-size: 1.1rem;
-  font-weight: 600;
-}
-
-.primario:disabled {
-  cursor: not-allowed;
-}
-
-.em-breve {
-  color: var(--suave);
-  font-style: italic;
 }
 
 /* --- Tela inicial --- */
 
-.inicio {
-  max-width: 640px;
-  padding-top: 48px;
-  text-align: center;
-}
-
-.inicio h1 {
-  font-size: clamp(1.8rem, 6vw, 2.6rem);
-  line-height: 1.15;
-}
-
-.subtitulo {
-  margin: 12px 0 32px;
-  color: var(--suave);
-  font-size: 1.1rem;
-}
-
-.menu {
-  display: grid;
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
 .cartao-menu {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  padding: 16px 20px;
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  background: var(--cartao);
-  color: var(--texto);
-  text-align: left;
+  color: inherit;
   text-decoration: none;
-}
-
-.cartao-menu .titulo {
-  font-size: 1.2rem;
-  font-weight: 600;
-}
-
-.cartao-menu .detalhe {
-  color: var(--suave);
-  font-size: 0.9rem;
+  transition:
+    transform 120ms ease,
+    box-shadow 120ms ease,
+    border-color 120ms ease;
 }
 
 a.cartao-menu:hover {
-  border-color: var(--destaque);
+  border-color: var(--mantine-primary-color-filled);
+  box-shadow: var(--mantine-shadow-md);
+  transform: translateY(-2px);
 }
 
 a.cartao-menu:focus-visible {
-  outline: 3px solid var(--destaque);
+  outline: 3px solid var(--mantine-primary-color-filled);
   outline-offset: 2px;
 }
 
-.cartao-menu.principal {
-  border-color: var(--destaque);
-  background: var(--destaque);
-  color: var(--fundo);
+.cartao-menu .detalhe {
+  color: var(--mantine-color-dimmed);
 }
 
-.cartao-menu.principal .detalhe {
-  color: var(--fundo);
+.cartao-menu[data-principal] {
+  border-color: var(--mantine-primary-color-filled);
+  background: var(--mantine-primary-color-filled);
+  color: var(--mantine-primary-color-contrast);
+}
+
+.cartao-menu[data-principal] .detalhe {
+  color: var(--mantine-primary-color-contrast);
   opacity: 0.85;
 }
 
-.cartao-menu:disabled {
+.cartao-menu[data-desabilitado] {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-/* --- Seleção do jogo --- */
+/* --- Cartões de escolha (Novo jogo) --- */
 
-.selecao fieldset {
-  margin: 20px 0;
-  padding: 0;
-  border: 0;
+.cartao-opcao {
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  transition: border-color 120ms ease;
 }
 
-.selecao fieldset[hidden] {
-  display: none;
+.cartao-opcao[data-checked] {
+  border-color: var(--mantine-primary-color-filled);
+  background: var(--mantine-primary-color-light);
 }
 
-.selecao legend {
-  margin-bottom: 8px;
-  font-weight: 600;
-}
+/* --- Biblioteca --- */
 
-.opcoes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 8px;
-}
-
-.opcao {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 10px;
-  align-items: center;
+.item {
+  display: flex;
+  flex-direction: column;
   padding: 10px 12px;
-  border: 1px solid var(--borda);
-  border-radius: 8px;
-  background: var(--cartao);
-  cursor: pointer;
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  background: var(--mantine-color-body);
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
 }
 
-.opcao:has(input:checked) {
-  border-color: var(--destaque);
+.item:not(:disabled):hover {
+  border-color: var(--mantine-primary-color-filled);
 }
 
-.opcao:has(input:focus-visible) {
-  outline: 3px solid var(--destaque);
-  outline-offset: 2px;
+.item:disabled {
+  cursor: wait;
+  opacity: 0.5;
 }
 
-.opcao input {
-  grid-row: span 2;
-  width: 18px;
-  height: 18px;
-  margin: 0;
-  accent-color: var(--destaque);
+.item[data-selecionado] {
+  border-color: var(--mantine-primary-color-filled);
+  background: var(--mantine-primary-color-light);
 }
 
-.opcao .titulo {
-  font-weight: 600;
-}
-
-.opcao .detalhe {
-  grid-column: 2;
-  color: var(--suave);
-  font-size: 0.85rem;
-}
-
-.resultado {
-  margin-top: 28px;
-  padding: 16px;
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  background: var(--cartao);
-}
-
-.resumo {
-  margin: 0 0 8px;
-  font-weight: 600;
-}
-
-.lista-de-itens {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0 0 16px;
-  padding: 0;
-  list-style: none;
-}
-
-.lista-de-itens li {
-  padding: 2px 10px;
-  border: 1px solid var(--borda);
-  border-radius: 999px;
-  font-weight: 600;
-}
-
-.aviso {
-  color: var(--destaque);
-  font-weight: 600;
-}
-
-.aviso[hidden] {
-  display: none;
-}
-
-/* --- Painel do item selecionado (plans/006) --- */
-
-.detalhe {
+.painel-do-item {
   position: sticky;
-  top: 0;
-  z-index: 1;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin: 12px 0;
-  padding: 12px 16px;
-  border: 1px solid var(--borda);
-  border-radius: 12px;
-  background: var(--cartao);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.08);
+  top: 8px;
+  z-index: 2;
 }
 
-.detalhe[hidden] {
-  display: none;
+.creditos {
+  border-top: 1px solid var(--mantine-color-default-border);
 }
 
-.detalhe h2 {
-  margin: 0;
-  font-size: 1.6rem;
+.creditos a {
+  color: var(--mantine-primary-color-filled);
 }
 
-.detalhe h2 .nome {
-  margin-left: 6px;
-  font-size: 1rem;
-  font-weight: 400;
-}
-
-.descricao {
-  margin: 2px 0 10px;
-  color: var(--suave);
-  font-size: 0.85rem;
-}
-
-.acoes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
+/* --- Desenhos (plans/006, plans/008) --- */
 
 .diagrama {
   flex: none;
-  height: 130px;
+  height: 140px;
 }
 
 .diagrama.piano {
-  width: min(100%, 300px);
+  width: min(100%, 320px);
   height: auto;
 }
 
 .diagrama .corda,
 .diagrama .traste {
-  stroke: var(--suave);
+  stroke: var(--mantine-color-dimmed);
   stroke-width: 1.2;
 }
 
 .diagrama .pestana-fixa {
-  fill: var(--texto);
+  fill: var(--mantine-color-text);
 }
 
 .diagrama .numero-da-casa,
 .diagrama .abafada {
-  fill: var(--suave);
+  fill: var(--mantine-color-dimmed);
   font-size: 12px;
 }
 
 .diagrama .ponto {
-  fill: var(--texto);
-}
-
-.diagrama .pestana {
-  fill: var(--suave);
-  opacity: 0.55;
+  fill: var(--mantine-color-text);
 }
 
 .diagrama .solta {
   fill: none;
-  stroke: var(--texto);
+  stroke: var(--mantine-color-text);
   stroke-width: 1.5;
 }
 
+.diagrama .pestana {
+  fill: var(--mantine-color-dimmed);
+  opacity: 0.5;
+}
+
 .diagrama .branca {
-  fill: var(--tecla-branca);
-  stroke: var(--borda);
+  fill: var(--mantine-color-white);
+  stroke: var(--mantine-color-default-border);
 }
 
 .diagrama .preta {
-  fill: var(--tecla-preta);
+  fill: var(--mantine-color-dark-7);
 }
 
+[data-mantine-color-scheme='dark'] .diagrama .branca {
+  fill: var(--mantine-color-gray-4);
+}
+
+[data-mantine-color-scheme='dark'] .diagrama .preta {
+  fill: var(--mantine-color-dark-9);
+}
+
+/* Teclas marcadas com os tons da paleta anterior (--marca e --tecla-preta-marcada). */
 .diagrama .branca.marcada {
-  fill: var(--marca);
+  fill: var(--mantine-primary-color-2);
 }
 
 .diagrama .preta.marcada {
-  fill: var(--tecla-preta-marcada);
+  fill: var(--mantine-primary-color-6);
+}
+
+[data-mantine-color-scheme='dark'] .diagrama .branca.marcada {
+  fill: var(--mantine-primary-color-6);
 }
 
 .diagrama .ponto,
@@ -476,73 +203,20 @@ a.cartao-menu:focus-visible {
 .diagrama .ativo,
 .diagrama .branca.ativo,
 .diagrama .preta.ativo {
-  fill: var(--destaque);
-  stroke: var(--destaque);
+  fill: var(--mantine-primary-color-filled);
+  stroke: var(--mantine-primary-color-filled);
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .cartao-menu,
+  .item,
   .diagrama .ponto,
   .diagrama .solta,
   .diagrama rect {
     transition: none;
   }
-}
 
-.controles {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 20px 0 8px;
-}
-
-.abas {
-  display: flex;
-  border-bottom: 2px solid var(--borda);
-}
-
-.aba {
-  margin-bottom: -2px;
-  padding: 8px 18px;
-  border: 0;
-  border-bottom: 3px solid transparent;
-  background: transparent;
-  color: var(--suave);
-  font-weight: 600;
-}
-
-.aba[aria-selected='true'] {
-  border-bottom-color: var(--destaque);
-  color: var(--texto);
-}
-
-.alternar {
-  padding: 8px 14px;
-  border: 1px solid var(--borda);
-  border-radius: 999px;
-  background: var(--cartao);
-  color: var(--texto);
-}
-
-.alternar[aria-pressed='true'] {
-  border-color: var(--destaque);
-  color: var(--destaque);
-  font-weight: 600;
-}
-
-.secundario {
-  padding: 8px 14px;
-  border: 1px solid var(--destaque);
-  border-radius: 8px;
-  background: transparent;
-  color: var(--destaque);
-}
-
-footer {
-  margin-top: 48px;
-  padding-top: 16px;
-  border-top: 1px solid var(--borda);
-  color: var(--suave);
-  font-size: 0.85rem;
+  a.cartao-menu:hover {
+    transform: none;
+  }
 }

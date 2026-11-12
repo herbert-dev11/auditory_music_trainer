@@ -32,7 +32,7 @@ Os **sons** não são cobertos pela licença do código: continuam sob a licenç
 
 Quem reutilizar os sons precisa dar crédito aos autores, conforme a CC BY. Créditos completos em [CREDITS.md](CREDITS.md); bibliotecas e versões em [docs/licencas.md](docs/licencas.md).
 
-**Status:** fase 2 (tela inicial, navegação e seleção do jogo), [plano 009](plans/009-tela-inicial-e-selecao.md). Fase 1 (som de violão e de piano; biblioteca com desenho, demonstração nota por nota, anúncio por voz, tema claro/escuro, acordes abertos e modo simplificado) nos planos [003](plans/003-som-do-violao-e-biblioteca.md) a [008](plans/008-acordes-abertos-pestana-e-simplificado.md). Próximo: o jogo (fase 3). Pendências da fase 0 no [plano 001](plans/001-configuracao-do-projeto.md).
+**Status:** fase 2 (tela inicial, navegação e seleção do jogo), [plano 009](plans/009-tela-inicial-e-selecao.md); interface em React + Mantine, [plano 010](plans/010-react-e-mantine.md). Fase 1 (som de violão e de piano; biblioteca com desenho, demonstração nota por nota, anúncio por voz, tema claro/escuro, acordes abertos e modo simplificado) nos planos [003](plans/003-som-do-violao-e-biblioteca.md) a [008](plans/008-acordes-abertos-pestana-e-simplificado.md). Próximo: o jogo (fase 3). Pendências da fase 0 no [plano 001](plans/001-configuracao-do-projeto.md).
 
 ---
 

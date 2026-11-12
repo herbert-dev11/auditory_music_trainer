@@ -12,9 +12,9 @@ Keep changes small, scoped, and consistent with what already exists.
 
 ## Stack & layout
 
-TypeScript (`strict`) + Vite, no UI framework; static SPA published on GitHub Pages. Audio with Tone.js, music theory with Tonal, speech with the browser's Web Speech API and `speechSynthesis`. Tests with Vitest. See `docs/architecture.md`.
+TypeScript (`strict`) + Vite, UI in React 19 with Mantine 9 (plan 010); static SPA published on GitHub Pages. Audio with Tone.js, music theory with Tonal, speech with the browser's Web Speech API and `speechSynthesis`. Tests with Vitest. See `docs/architecture.md`.
 
-Layers under `src/`: `ui/` → `exercicio/` (game state machine) → `dominio/` (notes, chords, spoken names, speech interpretation). `audio/`, `fala/` and `dados/` are adapters injected into the game. `dominio/` and `exercicio/` stay pure: no Tone.js, no Web Speech, no DOM, no `localStorage`.
+Layers under `src/`: `ui/` (React components) → `exercicio/` (game state machine) → `dominio/` (notes, chords, spoken names, speech interpretation). `audio/`, `fala/` and `dados/` are adapters injected into the game. `dominio/` and `exercicio/` stay pure: no Tone.js, no Web Speech, no DOM, no `localStorage`.
 
 ## Commands
 

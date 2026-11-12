@@ -38,12 +38,17 @@ Licenses and versions are tracked in [licencas.md](licencas.md); every new depen
 |---|---|---|
 | `tone` | runtime | `Sampler` with the guitar (tonejs-instruments) and piano (Salamander) samples, both CC BY |
 | `tonal` | runtime | Music theory: MIDI numbers, pitch classes, chord notes |
+| `react`, `react-dom` | runtime | UI components ([plan 010](../plans/010-react-e-mantine.md)) |
+| `@mantine/core`, `@mantine/hooks` | runtime | Ready-made accessible components, light/dark theme |
+| `@vitejs/plugin-react` | dev | React in Vite (Fast Refresh) |
 | `vite` | dev | Dev server and build |
 | `typescript` | dev | Type checking (`strict`) |
 | `vitest`, `@vitest/coverage-v8` | dev | Tests and coverage |
 | `eslint`, `prettier` | dev | Lint and formatting |
 
-No UI framework in the MVP (vanilla TypeScript + DOM). Revisit if screens grow.
+The UI is React 19 + Mantine 9 (plan 010). The first screens were vanilla TypeScript + DOM ([plan 001](../plans/001-configuracao-do-projeto.md)); once the app had home, selection, library and theory screens, it moved to React. Only `ui/` changed: the pure layers and the adapters stayed the same.
+
+Theme: Mantine's color scheme is stored through our `RepositorioDePreferencias` (a custom `colorSchemeManager`, key `treinador:tema`). The palette is the original one (warm off-white with brown accent; dark with amber accent), set as a custom Mantine color plus a `cssVariablesResolver` in `ui/tema.tsx`. Layout is mobile-first: grids collapse to one column on narrow screens (RNF09).
 
 ## Module shapes
 
@@ -70,7 +75,7 @@ Rules:
 
 ### Navigation
 
-Hash routes (`#/`, `#/biblioteca`, `#/jogo`, `#/jogo/partida`, `#/teoria`), so GitHub Pages needs no server config and browser back/forward work ([plan 009](../plans/009-tela-inicial-e-selecao.md)). `ui/rotas.ts` draws a common top bar ("← Início" and the theme button), unmounts the previous screen (each `montar...` may return a cleanup function), updates the tab title and moves focus to the new screen's `<h1>`. Every screen receives the same `DependenciasDoApp` (players, narrator, preferences) from `main.ts`.
+Hash routes (`#/`, `#/biblioteca`, `#/jogo`, `#/jogo/partida`, `#/teoria`), so GitHub Pages needs no server config and browser back/forward work ([plan 009](../plans/009-tela-inicial-e-selecao.md)). `ui/rotas.ts` exposes a `useRota` hook; `ui/App.tsx` draws the common top bar ("← Início" and the theme control), renders the screen for the route with `key={rota}` (so leaving a screen unmounts it and its effects clean up the demonstration and voice), updates the tab title and moves focus to the new screen's `<h1>` (plan 010). Every screen reads the same `DependenciasDoApp` (players, narrator, preferences) from a React context filled in `main.tsx`.
 
 The selection rules (which items enter the game, RN07's minimum of 2, validating a stored selection) live in `exercicio/selecao.ts` and are unit-tested.
 
@@ -96,7 +101,7 @@ Single notes play in the C3–B3 octave, on the string with the lowest fret. The
 
 ### Note-by-note demonstration
 
-`dominio/demonstracao.ts` builds a pure script of steps `{ emMs, indices }` (each note alone, then the whole chord). Indices point into the voicing; `ui/diagramas.ts` draws the guitar fretboard / piano keyboard as SVG and returns one element per voicing index, so the library lights up the string or key that is sounding ([plan 006](../plans/006-demonstracao-nota-por-nota.md)). On guitar, the voicing is derived from `casas()`, so sound and drawing cannot diverge.
+`dominio/demonstracao.ts` builds a pure script of steps `{ emMs, indices }` (each note alone, then the whole chord). Indices point into the voicing; `ui/Diagramas.tsx` draws the guitar fretboard / piano keyboard as SVG components that receive the lit indices as a prop, so the library lights up the string or key that is sounding ([plan 006](../plans/006-demonstracao-nota-por-nota.md)). On guitar, the voicing is derived from `casas()`, so sound and drawing cannot diverge.
 
 `audio/` only receives the MIDI list. `Tocador.tocar` resolves with the milliseconds until the sound ends, so screens can speak or move on afterwards. `TocadorDeAmostras` is configured per instrument (sample folder, sample list, default delay between notes: 30 ms strum on guitar, 0 ms on piano). Screens and the game depend on the `Tocador` interface, so tests can inject a fake.
 
