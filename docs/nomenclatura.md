@@ -65,7 +65,7 @@ A transcrição vem suja: "do sustenido menor", "dor menor", "si" virando "sim".
 
 1. **Normalizar**: minúsculas, tirar acentos, tirar pontuação.
 2. **Trocar sinônimos** por termos canônicos (`dor` → `do`, `sustenida` → `sustenido`, `sim` → `si`...). A lista real sai da fase 4 (o teste isolado da fala), não de chute.
-3. **Ler da esquerda para a direita**: uma nota (obrigatória), depois um acidente (opcional), depois uma qualidade (opcional).
+3. **Ler da esquerda para a direita**: uma nota (obrigatória), depois um acidente (opcional), depois uma qualidade (opcional). Palavras antes da nota são ignoradas ("é dó", "acho que é ré"), e palavras depois da qualidade também ("lá menor né").
 4. **Qualidade: casar o termo mais longo primeiro**, porque "menor com sétima" começa com "menor".
 5. Resultado: `{ classe: 1, qualidade: "m" }` ou "não entendi".
 6. Testar **todas as alternativas** que o reconhecedor devolver (`maxAlternatives`) e ficar com a primeira que fizer sentido.
@@ -73,10 +73,11 @@ A transcrição vem suja: "do sustenido menor", "dor menor", "si" virando "sim".
 Regras que afetam a interpretação:
 
 - **RN03**: no violão, num exercício de acorde, a nota sozinha vale como acorde maior: "dó" = `C`. Menor e sétima precisam ser ditos ("dó menor", "dó com sétima").
-- Num exercício de **nota isolada**, qualquer qualidade falada é ignorada ou recusada (decidir durante a fase 5).
+- Num exercício de **nota isolada**, qualquer qualidade falada é **ignorada**: "dó maior" vale como "dó" (decidido no [plano 011](../plans/011-jogo-com-botoes.md); recusar puniria uma fala natural).
+- Implementação: `src/dominio/interpretacao.ts`. Sinônimos da primeira versão: `dor` → `do`, `sim` → `si`, `sustenida` → `sustenido`, `7` → `sétima` ("ré com 7"); `#` vale como sustenido. A lista cresce com o CSV da página de teste da fala ([plano 012](../plans/012-teste-da-fala.md)).
 - **RN04**: "não entendi" não é erro: usa a segunda chance do exercício. Só uma resposta entendida e errada encerra o jogo (RN05).
 
-## Casos de teste (escrever antes do código, na fase 5)
+## Casos de teste (escritos antes do código; estão em `src/dominio/interpretacao.test.ts`)
 
 Exercício de **nota isolada**:
 

@@ -52,6 +52,15 @@ export function nomeFalado(item: Item): string {
   return item.tipo === 'nota' ? raiz : `${raiz} ${QUALIDADE[item.qualidade].falado}`
 }
 
+/**
+ * Mesmo item? Compara pela classe de altura (RN01: "ré bemol" e "dó sustenido" são iguais) e pela qualidade.
+ * A classe já é um número 0–11, então a enarmonia sai de graça.
+ */
+export function mesmoItem(a: Item, b: Item): boolean {
+  if (a.tipo !== b.tipo || a.raiz !== b.raiz) return false
+  return a.tipo === 'nota' || (b.tipo === 'acorde' && a.qualidade === b.qualidade)
+}
+
 /** As 12 notas, depois os acordes agrupados por qualidade. */
 export function todosOsItens(): Item[] {
   const notas: Item[] = CLASSES.map((raiz) => ({ tipo: 'nota', raiz }))

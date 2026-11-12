@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { cifra, nomeFalado, todosOsItens, type Item } from './itens'
+import { cifra, mesmoItem, nomeFalado, todosOsItens, type Item } from './itens'
+
+describe('mesmoItem (RN01)', () => {
+  it('compara tipo, raiz e qualidade', () => {
+    expect(mesmoItem({ tipo: 'nota', raiz: 1 }, { tipo: 'nota', raiz: 1 })).toBe(true)
+    expect(mesmoItem({ tipo: 'nota', raiz: 1 }, { tipo: 'nota', raiz: 2 })).toBe(false)
+    expect(mesmoItem({ tipo: 'acorde', raiz: 1, qualidade: 'm' }, { tipo: 'acorde', raiz: 1, qualidade: 'm' })).toBe(true)
+    expect(mesmoItem({ tipo: 'acorde', raiz: 1, qualidade: 'm' }, { tipo: 'acorde', raiz: 1, qualidade: '' })).toBe(false)
+    expect(mesmoItem({ tipo: 'nota', raiz: 0 }, { tipo: 'acorde', raiz: 0, qualidade: '' })).toBe(false)
+    expect(mesmoItem({ tipo: 'acorde', raiz: 0, qualidade: '' }, { tipo: 'nota', raiz: 0 })).toBe(false)
+  })
+})
 
 const nota = (raiz: Item['raiz']): Item => ({ tipo: 'nota', raiz })
 const acorde = (raiz: Item['raiz'], qualidade: Extract<Item, { tipo: 'acorde' }>['qualidade']): Item => ({
