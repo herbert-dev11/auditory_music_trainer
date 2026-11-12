@@ -1,38 +1,49 @@
-# 011 — Jogo com botões (fase 3)
+# 011 — O jogo, respondido por voz (fases 3, 5 e 6)
 
-Escopo: [PROJECT.md](../docs/PROJECT.md) v0.3, fase 3 do Roteiro: RF03, RF04, RF05, RF08, RF10, RF12–RF15, RN02, RN05, RN06, e o UC02 respondendo por botões. A voz (pergunta falada, microfone, reconhecimento) é a fase 6.
+> Escrito como "jogo com botões" (fase 3) e **emendado em 2026-11-12**: o autor decidiu que o jogo é respondido só por voz. O plano passou a juntar a fase 3 (o jogo), uma primeira versão da fase 5 (interpretar a fala) e a fase 6 (voz no jogo). O que mudou do rascunho está em "Decisões do rascunho que mudaram".
+
+Escopo: [PROJECT.md](../docs/PROJECT.md) v0.3: RF03–RF14, RN01–RN08, RNF02–RNF04 e o UC02.
 
 ## Problema
 
-A seleção do jogo já existe ([plano 009](009-tela-inicial-e-selecao.md)), mas "Começar" leva a uma tela provisória. Falta o jogo: ouvir, responder, acertar ou errar, e ver o resultado. Fazer primeiro com botões valida toda a lógica e a interface sem depender do reconhecimento de fala, e os botões continuam como alternativa quando não há microfone (RF15).
+A seleção do jogo existe ([plano 009](009-tela-inicial-e-selecao.md)) e a fala já foi testada isoladamente ([plano 012](012-teste-da-fala.md)), mas "Começar" leva a uma tela provisória. Falta o jogo: ouvir a nota ou o acorde, responder falando, acertar ou errar, e ver o resultado.
 
-**Dentro:** explicação, contagem 3-2-1, sorteio, som, cronômetro, resposta por botões, "Ouvir de novo", "Parar", acerto e erro, fim no primeiro erro, tela de resultado.
-**Fora:** voz sintética, microfone e reconhecimento (fase 6); recorde guardado (RF17) e estatísticas (RF21), que dependem de guardar partidas.
+**Dentro:** explicação, contagem 3-2-1, sorteio, som, pergunta falada, microfone com cronômetro, interpretação da fala, "Entendi: ...", segunda chance, "Ouvir de novo", "Parar", acerto, erro, resultado.
+**Fora:** ajuste fino da interpretação com os erros reais do CSV da fase 4 (próximo passo da fase 5); recorde e estatísticas (RF17, RF21).
 
 ## Decisões
 
-- **Máquina de estados pura em `exercicio/partida.ts`**: `(estado, evento) → estado`, sem relógio, som nem DOM. Estados: `explicacao → contagem → tocando → respondendo → acerto | erro → … → resultado` (o desenho do [architecture.md](../docs/architecture.md), sem `perguntando` e `ouvindo`, que são da voz). Eventos: `comecar`, `tique` (contagem), `somAcabou`, `responder(item)`, `tempoEsgotou`, `ouvirDeNovo`, `parar`, `seguir`. Toda regra de negócio fica testável aqui.
-- **A tela cuida do tempo e do som** (`ui/Partida.tsx`): agenda a contagem, toca pelo `Tocador` (que já diz quando o som acaba), roda o cronômetro e manda os eventos para a máquina. Relógio e sorteio são injetados, para os testes não dependerem de tempo real nem de acaso.
-- **Sorteio sem repetir o item da rodada anterior**: repetir seguido parece defeito e treina menos. Com 2 itens, alterna. Sorteio puramente aleatório (rejeitado).
-- **Cronômetro começa quando o som acaba** (RN02: 5 s para notas, 8 s para acordes), igual ao microfone na fase 6 (RF07). Os botões de resposta ficam desabilitados enquanto o som toca, pelo mesmo motivo. Barra de progresso visível que esvazia (RF08).
-- **Tempo esgotado usa a segunda chance (RN04)**: a regra vale para o silêncio na voz, e no jogo com botões o tempo esgotado é o equivalente. A primeira vez avisa "Tempo esgotado, tente de novo" e toca de novo; a segunda vez encerra como erro. Assim a máquina já nasce com a segunda chance que a fase 6 usa para "não entendi".
-- **Resposta errada encerra na hora (RN05)**: mostra "Errou! Era dó maior", toca o som certo mais uma vez (E1) e vai para o resultado.
-- **Acerto**: "Acertou!" por cerca de 1 s, soma 1 à sequência e sorteia o próximo.
-- **"Ouvir de novo" reinicia o cronômetro (RN06)** e não gasta a segunda chance. "Parar" encerra a qualquer momento a partir da contagem (A5) e vai para o resultado.
-- **Botões de resposta pensados para o celular**:
-  - notas: uma grade com só as notas da seleção, botões grandes;
-  - acordes com um tipo só: grade de raízes;
-  - acordes com mais de um tipo: dois passos, primeiro a raiz e depois o tipo (no máximo 12 + 5 botões, em vez de até 60 numa grade só).
-- **Comparação pela classe de altura (RN01)** e pela qualidade, com uma função pura (`mesmoItem`). Nos botões não há ambiguidade de nome; a regra RN03 ("dó" = dó maior) é da fala e entra na fase 5.
-- **O som do jogo segue a preferência "Simplificado" do violão**: soa igual ao que o usuário treinou na biblioteca. O acorde toca inteiro (dedilhado no violão, junto no piano), sem a demonstração nota por nota, que entregaria a resposta.
-- **Resultado (RF14)**: sequência de acertos, lista dos itens acertados, o item do erro (se houve) e os botões "Jogar de novo" (mesma seleção), "Mudar seleção" e "Início".
-- **A partida não é guardada nesta fase**: o contrato `Partida` do [plano 002](002-back-end.md) entra quando houver recorde (RF17) ou histórico. A máquina já registra, a cada resposta, o item esperado, o respondido, o resultado e o tempo, para não precisar mudar depois.
-- **Explicação antes de começar (RF03)**: texto curto de como o jogo funciona e o botão "Começar", que também é o gesto que libera o áudio no navegador.
-- **Acessibilidade**: a contagem, o "Acertou!/Errou!" e o aviso de tempo esgotado vão numa região `aria-live`; tudo funciona pelo teclado; a barra do cronômetro tem o tempo em texto para leitor de tela.
+- **Resposta só por voz** (decisão do autor). Na tela do jogo há só dois botões: **"Ouvir de novo"** e **"Parar"** (que volta ao resultado); a barra comum continua com "← Início". Em navegador sem reconhecimento de fala, a tela avisa e não começa (RNF01: Chrome e iPhone). O RF15 (botões como reserva) saiu do PROJECT.md.
+- **Máquina de estados pura em `exercicio/partida.ts`**: `(estado, evento) → estado`, sem relógio, som, voz nem DOM. Fases: `explicacao → contagem → tocando → ouvindo → acerto | nao-entendi | erro → … → resultado`. O sorteio recebe o número aleatório no próprio evento, para os testes serem previsíveis.
+- **A tela cuida do tempo, do som e da voz** (`ui/Partida.tsx`): agenda a contagem, toca pelo `Tocador`, faz a pergunta pelo `Narrador`, abre o microfone pelo `ReconhecedorDeFala`, interpreta e manda os eventos para a máquina.
+- **Ordem de cada rodada (UC02, RNF02)**: toca o som → espera acabar → pergunta "Que nota é essa?" (ou "Que acorde é esse?") → espera a voz terminar → só então abre o microfone e começa o cronômetro (RF07). O `Narrador.falar` passou a avisar quando termina.
+- **Cronômetro de 5 s para notas e 8 s para acordes (RN02)**, com barra que esvazia e o tempo em texto. O tempo é o limite da escuta: se ninguém falar, conta como silêncio.
+- **Segunda chance (RN04)**: "não entendi" (nenhuma alternativa vira nota) ou silêncio avisam "Não entendi, fale de novo" e reabrem o microfone, sem tocar de novo. Na segunda vez, encerra como erro. "Não entendi" não é erro.
+- **Resposta entendida e errada encerra na hora (RN05)**: "Errou! Era dó maior", a voz diz o nome certo, o som certo toca mais uma vez (E1) e vai para o resultado.
+- **"Ouvir de novo" (RN06)**: fecha o microfone, toca o som e repete a pergunta; o cronômetro recomeça e a segunda chance não é gasta. Disponível enquanto o microfone está aberto e depois de um "não entendi".
+- **Interpretação da fala, primeira versão (fase 5), em `dominio/interpretacao.ts`**, seguindo o [nomenclatura.md](../docs/nomenclatura.md): normaliza, troca sinônimos conhecidos ("dor" → "dó", "sim" → "si", "sustenida" → "sustenido"), procura a primeira palavra que é nota, lê o acidente e a qualidade (o termo mais longo primeiro). Testa todas as alternativas e fica com a primeira que fizer sentido. Os casos de teste do nomenclatura.md viram testes. A lista de sinônimos cresce com o CSV da fase 4.
+- **Palavras antes da nota são ignoradas** ("é dó", "acho que é ré"): a pessoa fala naturalmente, e o reconhecimento às vezes acrescenta palavras.
+- **No modo nota, qualidade falada é ignorada** ("dó maior" num exercício de nota vale como "dó"): a decisão que o nomenclatura.md deixava para a fase 5. Recusar puniria uma fala natural.
+- **RN03**: no modo acorde, a nota sozinha vale como acorde maior ("dó" = C).
+- **Comparação pela classe de altura (RN01)** e pela qualidade: "ré bemol" acerta um C#.
+- **Mostra o que entendeu (RF09)**: "Entendi: dó sustenido menor" depois de cada resposta, também no erro.
+- **Sorteio sem repetir o item da rodada anterior** (aprovado pelo autor). Com 2 itens, alterna.
+- **O som do jogo é sempre o desenho normal** (aprovado pelo autor): o "Simplificado" é escolha do jogador na biblioteca. O acorde toca inteiro, sem a demonstração nota por nota.
+- **Áudio e voz liberados no clique de "Começar"**: o navegador, principalmente o do iPhone, só libera som e voz sintética depois de um gesto. O clique toca um som vazio e diz "Vamos começar" antes da contagem.
+- **Resultado (RF14)**: sequência de acertos, itens acertados, o item do erro e o que foi entendido; botões "Jogar de novo" (mesma seleção), "Mudar seleção" e "Início".
+- **A partida não é guardada nesta fase**, mas a máquina registra cada resposta (esperado, entendido, resultado, tempo, tentativa, vezes que ouviu de novo), no formato do contrato `Resposta` do [plano 002](002-back-end.md), para o recorde e o histórico depois.
+- **Acessibilidade**: contagem, "Acertou!", "Não entendi" e "Errou!" numa região `aria-live`; tudo funciona pelo teclado; a própria voz do jogo dá o retorno sonoro.
+
+## Decisões do rascunho que mudaram
+
+- ~~Botões de resposta pensados para o celular (grade de notas; acordes em dois passos, raiz e depois tipo).~~ Sem botões de resposta: só voz.
+- ~~Tempo esgotado usa a segunda chance; a fase 6 acrescenta o "não entendi".~~ A segunda chance já nasce com os dois casos (silêncio e "não entendi"), como no PROJECT.md.
+- ~~Comparação por botão, sem ambiguidade de nome; a RN03 entra na fase 5.~~ A interpretação da fala (com a RN03) entra já neste plano.
+- ~~O som do jogo segue a preferência "Simplificado".~~ Sempre o desenho normal.
 
 ## Dados
 
-Nenhum dado novo guardado. Lê a última seleção (`treinador:ultimaSelecao`) e a preferência `treinador:simplificado`.
+Nenhum dado novo guardado. Lê a última seleção (`treinador:ultimaSelecao`). Nenhum áudio é gravado (RNF03): só o texto reconhecido, em memória, durante a partida.
 
 ## API
 
@@ -40,19 +51,22 @@ Tela substituída: **Partida** (`#/jogo/partida`), com as fases explicação, co
 
 ## Riscos
 
-- Os tempos (contagem, intervalo depois do acerto) são `setTimeout`; em aba em segundo plano, o navegador pode atrasá-los. Aceito.
-- O primeiro som pode atrasar se as amostras ainda não carregaram: carregar durante a explicação e só liberar "Começar" quando estiverem prontas.
-- Dois passos para responder acordes custam um toque a mais; conferir com o autor se incomoda.
+- No iPhone, o reconhecimento pode exigir que cada escuta comece num toque; se for assim, o microfone não abre sozinho depois da pergunta. O teste da fase 4 no iPhone mostra; a saída seria um botão "Responder" só no iPhone.
+- A interpretação ainda não conhece os erros reais do reconhecimento; até o ajuste com o CSV, algumas falas certas vão dar "não entendi" (que não é erro, por causa da segunda chance).
+- Os tempos são `setTimeout`; em aba em segundo plano, o navegador pode atrasá-los. Aceito.
+- `ui/`, `fala/` e `audio/` sem teste automático; a máquina e a interpretação estão testadas.
 
 ## Critério de pronto
 
-- [ ] `exercicio/partida.ts` com testes: contagem, sorteio sem repetir, acerto soma, erro encerra (RN05), tempo esgotado com segunda chance (RN04), "Ouvir de novo" reinicia o tempo e não gasta a chance (RN06), "Parar" (A5), registro das respostas
-- [ ] `mesmoItem` (RN01) testado
-- [ ] Tela da partida: explicação, contagem, cronômetro, botões em um ou dois passos, "Ouvir de novo", "Parar", acerto, erro com o som certo, resultado
-- [ ] Responsiva: conferida em largura de celular
-- [ ] PROJECT.md (Roteiro), [architecture.md](../docs/architecture.md) e [testing.md](../docs/testing.md) atualizados
-- [ ] Conferido à mão: uma partida inteira com notas e outra com acordes, nos dois instrumentos
+- [x] `dominio/interpretacao.ts` com os casos do nomenclatura.md como testes (modo nota e modo acorde, RN01, RN03, sinônimos, palavras antes da nota, "não entendi")
+- [x] `exercicio/partida.ts` com testes: contagem, sorteio sem repetir, acerto, erro (RN05), segunda chance por silêncio e por "não entendi" (RN04), "Ouvir de novo" (RN06), "Parar" (A5), jogar de novo, registro das respostas (100% de cobertura)
+- [x] `Narrador.falar` avisa quando termina
+- [x] Tela da partida: explicação com aviso de privacidade, contagem, som, pergunta falada, microfone com cronômetro, "Entendi", acerto, não entendi, erro com som certo, resultado; aviso em navegador sem fala
+- [x] Responsiva; explicação conferida em captura a 500 px
+- [x] PROJECT.md (RF15, Roteiro), [nomenclatura.md](../docs/nomenclatura.md), [architecture.md](../docs/architecture.md) e [testing.md](../docs/testing.md) atualizados
+- [ ] Conferido à mão no Chrome e no iPhone, pelo endereço do Pages: partida com notas e com acordes
 
 ## Histórico
 
-- 2026-11-12: plano escrito a pedido do autor, depois dos PRs das fases 1 e 2 e do React.
+- 2026-11-12: rascunho como "jogo com botões".
+- 2026-11-12: emendado depois da revisão do autor: só voz, botão de ouvir de novo e de voltar, aviso no tempo esgotado, sem repetir, som normal. Passa a cobrir as fases 3, 5 (primeira versão) e 6.

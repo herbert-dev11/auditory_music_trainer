@@ -49,7 +49,7 @@ Tela nova: **Teste da fala** (`#/teste-da-fala`). Link discreto na tela inicial.
 - [x] Aviso de privacidade e aviso de navegador sem fala
 - [x] Build com endereços relativos e workflow do Pages
 - [x] PROJECT.md (RNF01, Roteiro), [architecture.md](../docs/architecture.md), [testing.md](../docs/testing.md) e README atualizados
-- [ ] Pages ativado no repositório e primeira publicação
+- [x] Pages ativado no repositório e primeira publicação (2026-11-12, com HTTPS obrigatório)
 - [ ] Testado à mão no Chrome do computador e no iPhone, pelo endereço do Pages; CSV guardado para a fase 5
 
 ## Histórico

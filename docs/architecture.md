@@ -6,20 +6,22 @@ Product scope and requirement IDs (RF, RNF, RN) live in [PROJECT.md](PROJECT.md)
 
 The MVP is a **static single-page app** that runs entirely in the browser. There is no server: it is built by Vite and published on GitHub Pages (HTTPS, which the microphone requires) by `.github/workflows/pages.yml` on every push to `main`. The build uses relative URLs (`base: './'`), so it works under `https://<user>.github.io/auditory_music_trainer/` without hard-coding the repository name ([plan 012](../plans/012-teste-da-fala.md)).
 
-Main flow of one game (UC02), as a state machine:
+Main flow of one game (UC02), as a pure state machine in `exercicio/partida.ts` ([plan 011](../plans/011-jogo-com-botoes.md)); phase names as in the code:
 
 ```
-explanation → countdown → playing → asking → listening → evaluating → feedback → playing ...
-                                                ↑           │
-                                                └───────────┘  not understood / silence (second chance, RN04)
-feedback (wrong answer) or "Stop" → result
-"Listen again" while listening → playing (timer restarts, RN06)
+explicacao → contagem (3-2-1) → tocando → ouvindo → acerto → tocando (next item) ...
+                                   ↑          │
+                                   │          ├→ nao-entendi → ouvindo   (second chance, RN04)
+                                   │          └→ erro → resultado        (wrong answer, RN05; or second chance used)
+                                   └── "Ouvir de novo" from ouvindo / nao-entendi (timer restarts, RN06)
+"Parar" from any phase in play → resultado (A5)
 ```
 
-- **playing**: Tone.js plays the drawn note or chord (chords strum string by string, ~30 ms apart).
-- **asking**: `speechSynthesis` says "Que nota é essa?" in pt-BR.
-- **listening**: the microphone opens only after sound and voice have finished (RNF02); the timer runs (5 s notes / 8 s chords, RN02).
-- **evaluating**: the transcript (all alternatives) is interpreted into `{ pitchClass, quality }` and compared by pitch class (RN01).
+- **tocando**: Tone.js plays the drawn item (normal voicing; chords strum on guitar, together on piano); then `speechSynthesis` asks "Que nota é essa?" / "Que acorde é esse?". `Narrador.falar` resolves when the voice ends.
+- **ouvindo**: the microphone opens only after sound and voice have finished (RNF02); the timer runs (5 s notes / 8 s chords, RN02) and is the listening limit, so no answer counts as silence.
+- **evaluating** (in `ui/Partida.tsx`): all alternatives go through `dominio/interpretacao.ts` (normalize, synonyms, first note word, accidental, longest quality match) and the first that makes sense is compared with `mesmoItem` (pitch class + quality, RN01; bare note = major in chord mode, RN03).
+- The reducer receives the random number inside the event (`tique`, `seguir`), so draws are testable; the next item never repeats the previous one.
+- The screen schedules time, plays, asks and listens, then dispatches events; the "Começar" click also unlocks audio and speech (needed on iPhone).
 
 Browser APIs used:
 

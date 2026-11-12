@@ -10,10 +10,10 @@ The goal is the confidence to ship, not a coverage number.
 
 In this project that means, above all:
 
-- **Speech interpretation** (`dominio/`): transcript → `{ pitchClass, quality }` or "not understood". The cases in [nomenclatura.md](nomenclatura.md) are written as tests **before** the code (phase 5).
+- **Speech interpretation** (`dominio/interpretacao.ts`): transcript → note/chord or "not understood". The cases in [nomenclatura.md](nomenclatura.md) are tests; new synonyms from the phase 4 CSV get a test each.
+- **Game state machine** (`exercicio/partida.ts`): countdown, draw without repeats, hit, wrong answer ends the game (RN05), second chance for silence and "not understood" (RN04), "listen again" (RN06), stop (A5), play again, answer log ([plan 011](../plans/011-jogo-com-botoes.md)).
 - **Names and enharmonics** (`dominio/`): `C#` and `Db` share pitch class 1; chord symbol → spoken name.
 - **Drawing items from filters** (`exercicio/`): "naturals + minor" yields exactly Cm…Bm; fewer than 2 items blocks the game (RN07).
-- **Game state machine** (`exercicio/`): second chance (RN04), game over on a wrong answer (RN05), "listen again" restarts the timer (RN06).
 - **`calcularEstatisticas`**: pure, shared later with the API.
 
 ## What does not

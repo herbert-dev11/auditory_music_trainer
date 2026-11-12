@@ -51,7 +51,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 | RF12 | Botão "Ouvir de novo", que repete o som e reinicia o cronômetro (RN06) | M | ✔ |
 | RF13 | Encerrar o jogo no primeiro erro ou quando o usuário clicar em "Parar" (RN05) | M | ✔ |
 | RF14 | Mostrar o resultado: sequência de acertos e os itens acertados | M | ✔ |
-| RF15 | Responder por botões quando o microfone for recusado ou não estiver disponível | M | ✔ |
+| RF15 | ~~Responder por botões quando o microfone for recusado ou não estiver disponível~~ **Removido na v0.3**: a resposta é só por voz; sem reconhecimento de fala ou sem microfone, o jogo avisa o motivo e não começa ([plano 011](../plans/011-jogo-com-botoes.md)) | — | |
 | RF16 | Biblioteca de sons: aba com todas as notas e acordes, com botão de play e abas Violão / Piano, para ouvir antes de jogar | S | ✔ |
 | RF17 | Guardar o recorde (maior sequência de acertos) no navegador | S | |
 | RF18 | Marcar ou desmarcar itens individuais dentro da seleção | S | |
@@ -99,7 +99,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 | ID | Caso de uso | Requisitos |
 |---|---|---|
 | UC01 | Selecionar itens do treino | RF01, RF02, RF18, RN07 |
-| UC02 | Jogar o treino auditivo | RF03–RF15, RN01–RN08 |
+| UC02 | Jogar o treino auditivo | RF03–RF14, RN01–RN08 |
 | UC03 | Ouvir a biblioteca de sons | RF16, RF22, RF25, RF26 |
 | UC04 | Consultar o manual de teoria | RF19 |
 
@@ -165,15 +165,15 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 | 1 | Tocar notas e acordes com voicing de violão; biblioteca de sons | RF05 (som), RF16 | [003](../plans/003-som-do-violao-e-biblioteca.md) |
 | 1b | Piano como segundo instrumento, com abas na biblioteca; anúncio do nome por voz; desenho e demonstração nota por nota; tema claro e escuro; acordes abertos, pestana e modo simplificado | RF05 (som), RF16, RF22, RF25–RF28 | [004](../plans/004-piano.md), [005](../plans/005-anuncio-por-voz.md), [006](../plans/006-demonstracao-nota-por-nota.md), [007](../plans/007-tema-claro-e-escuro.md), [008](../plans/008-acordes-abertos-pestana-e-simplificado.md) |
 | 2 | Tela inicial, navegação e seleção por instrumento, modo, raiz e tipo | RF01, RF02, RN07 | [009](../plans/009-tela-inicial-e-selecao.md) |
-| 3 | Jogo completo **com botões**: explicação, contagem, sorteio, cronômetro, "Ouvir de novo", fim no erro, resultado | RF03, RF04, RF05, RF08, RF10, RF12–RF15, RN02, RN05, RN06 | — |
+| 3 | Jogo completo: explicação, contagem, sorteio, cronômetro, "Ouvir de novo", fim no erro, resultado (planejado com botões; feito direto por voz, junto com as fases 5 e 6) | RF03, RF04, RF05, RF08, RF10, RF12–RF14, RN02, RN05, RN06 | [011](../plans/011-jogo-com-botoes.md) |
 | 4 | Página isolada de teste da fala: mostrar transcrições e alternativas, registrar os resultados; app publicado no GitHub Pages para testar no celular | RF09, RNF01, RNF03, RNF04 | [012](../plans/012-teste-da-fala.md) |
-| 5 | Interpretação da fala, com TDD a partir de [nomenclatura.md](nomenclatura.md) | RF10 (voz), RN01, RN03, RN08 | — |
-| 6 | Jogo por voz: voz sintética, microfone, segunda chance | RF06, RF07, RF09, RF11, RN04, RNF02–RNF04 | — |
+| 5 | Interpretação da fala, com TDD a partir de [nomenclatura.md](nomenclatura.md). Primeira versão no plano 011; ajuste com os erros reais do CSV da fase 4 depois | RF10 (voz), RN01, RN03, RN08 | [011](../plans/011-jogo-com-botoes.md) (1ª versão) |
+| 6 | Jogo por voz: voz sintética, microfone, segunda chance | RF06, RF07, RF09, RF11, RN04, RNF02–RNF04 | [011](../plans/011-jogo-com-botoes.md) |
 | B0–B6 | Back-end (pós-MVP): contas, histórico, estatísticas, sincronização, LGPD | RF23 | [002](../plans/002-back-end.md) (rascunho) |
 | 7 | Pós-MVP: recorde, seleção individual, manual, nota de referência, estatísticas, outros instrumentos, PWA | RF17–RF21, RF24, RNF12 | — |
 | 8 | Avaliação: taxa de reconhecimento (RNF07/08) e questionário SUS | — | — |
 
-O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógica e a interface sem depender do reconhecimento de fala, e continua útil como alternativa (RF15).
+~~O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógica e a interface sem depender do reconhecimento de fala, e continua útil como alternativa (RF15).~~ Na v0.3, o autor decidiu que o jogo é respondido só por voz: a fase 4 (teste da fala) veio antes, e as fases 3, 5 e 6 foram feitas juntas no plano 011. A lógica do jogo continua separada e testada sem depender da fala (`exercicio/partida.ts`).
 
 ## Fora de escopo
 
@@ -190,6 +190,7 @@ O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógic
 | Assunto | v0.2 | v0.3 (atual) |
 |---|---|---|
 | Navegadores com voz (RNF01) | Chrome e Edge no computador | Chrome (computador e Android) e iPhone; os outros mostram aviso (decisão do autor; o Firefox não tem serviço de reconhecimento) |
+| Resposta no jogo (RF15) | Por voz, com botões como reserva sem microfone | Só por voz; no jogo, só os botões "Ouvir de novo" e "Parar" (decisão do autor) |
 | Instrumentos | Só violão; piano e teclado como RF22, desejável, fora do MVP | Piano entra no MVP (RF22, M); teclado e outros passam para o RF24 (C). Motivo: o timbre dos acordes de violão montados com amostras isoladas soa artificial, e o piano não tem essa limitação ([pesquisa-de-sons.md](pesquisa-de-sons.md)) |
 | Navegação (RF01, UC01) | Violão → Notas / Acordes | Tela inicial (Iniciar jogo, Biblioteca, Teoria, Entrar / Sair desabilitado); em "Iniciar jogo", Violão / Piano → Notas / Acordes → raízes e tipos |
 | Tipos de acorde (RF02) | Maior, menor, sétima (7, m7 e 7M juntos) | As 5 qualidades separadas; notas e acordes não se misturam na mesma partida |
