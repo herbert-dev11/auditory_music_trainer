@@ -3,4 +3,16 @@ node_modules
 .env.local
 coverage
 dist
+dist-ssr
+*.local
 *.log
+
+# Arquivos locais de ferramentas de IA (não vão para o GitHub)
+CLAUDE.md
+.claude/
+
+# Editores e sistema
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store

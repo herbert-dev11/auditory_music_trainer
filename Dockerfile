@@ -1,10 +1,12 @@
-FROM node:22-alpine
+# O MVP é um site estático (sem servidor Node): compila com Vite e serve o dist/ com nginx.
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
-ENV NODE_ENV=production
 
-EXPOSE 3000
-CMD ["node", "dist/server.js"]
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
