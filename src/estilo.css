@@ -120,6 +120,13 @@ a.cartao-menu:focus-visible {
   color: var(--mantine-primary-color-filled);
 }
 
+/* --- Teste da fala (plans/012) --- */
+
+.alternativas {
+  margin: 0;
+  padding-left: 1.4em;
+}
+
 /* --- Desenhos (plans/006, plans/008) --- */
 
 .diagrama {

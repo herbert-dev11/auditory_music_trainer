@@ -1,6 +1,6 @@
 // Tela inicial (RF01, plans/009): nome do sistema e as opções principais.
 
-import { Badge, Card, Container, Group, SimpleGrid, Stack, Text } from '@mantine/core'
+import { Anchor, Badge, Card, Container, Group, SimpleGrid, Stack, Text } from '@mantine/core'
 import { TituloDaTela } from './Comum'
 import { NOME_DO_SISTEMA } from './textos'
 
@@ -60,6 +60,12 @@ export function Inicio() {
           <CartaoDoMenu titulo="Entrar / Sair" detalhe="Contas de usuário" />
         </SimpleGrid>
       </nav>
+      {/* Ferramenta de teste da fase 4 (plans/012), não faz parte do jogo. */}
+      <Text ta="center" size="sm" mt="xl">
+        <Anchor href="#/teste-da-fala" c="dimmed">
+          Teste da fala
+        </Anchor>
+      </Text>
     </Container>
   )
 }

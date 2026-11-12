@@ -11,6 +11,7 @@ import { INICIO, ROTAS, useRota, type Rota } from './rotas'
 import { Selecao } from './Selecao'
 import { gerenciadorDeTema, tema, variaveisDoTema } from './tema'
 import { Teoria } from './Teoria'
+import { TesteDaFala } from './TesteDaFala'
 import { NOME_DO_SISTEMA } from './textos'
 
 const TELAS: Record<Rota, ComponentType> = {
@@ -19,6 +20,7 @@ const TELAS: Record<Rota, ComponentType> = {
   '#/jogo': Selecao,
   '#/jogo/partida': Partida,
   '#/teoria': Teoria,
+  '#/teste-da-fala': TesteDaFala,
 }
 
 export function App({ deps }: { deps: DependenciasDoApp }) {

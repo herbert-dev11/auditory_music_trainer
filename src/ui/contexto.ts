@@ -6,10 +6,12 @@ import type { Tocador } from '../audio/tocador'
 import type { RepositorioDePreferencias } from '../dados/preferencias'
 import type { Instrumento } from '../dominio/instrumentos'
 import type { Narrador } from '../fala/narrador'
+import type { ReconhecedorDeFala } from '../fala/reconhecedor'
 
 export interface DependenciasDoApp {
   tocadores: Record<Instrumento, Tocador>
   narrador: Narrador
+  reconhecedor: ReconhecedorDeFala
   preferencias: RepositorioDePreferencias
 }
 

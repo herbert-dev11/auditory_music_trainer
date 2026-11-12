@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client'
 import { TocadorDeAmostras } from './audio/tocadorDeAmostras'
 import { PreferenciasLocais } from './dados/preferencias'
 import { NarradorDoNavegador } from './fala/narrador'
+import { ReconhecedorWebSpeech } from './fala/reconhecedorWebSpeech'
 import { App } from './ui/App'
 import { temaResolvido } from './ui/tema'
 
@@ -16,6 +17,7 @@ document.documentElement.setAttribute('data-mantine-color-scheme', temaResolvido
 const deps = {
   tocadores: { violao: new TocadorDeAmostras('violao'), piano: new TocadorDeAmostras('piano') },
   narrador: new NarradorDoNavegador(),
+  reconhecedor: new ReconhecedorWebSpeech(),
   preferencias,
 }
 

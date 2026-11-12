@@ -20,7 +20,7 @@ In this project that means, above all:
 
 - Framework glue or anything the typechecker already proves.
 - Real paid/shared services. Fakes injected through deps; real-service checks run by hand, never in CI.
-- Tone.js playback and the real Web Speech API: checked by hand in the browser (phase 4 has a dedicated speech test page).
+- Tone.js playback and the real Web Speech API: checked by hand in the browser. Phase 4 has a dedicated speech test page (`#/teste-da-fala`, [plan 012](../plans/012-teste-da-fala.md)) that exports a CSV of what each browser understood; the classification, summary and CSV logic (`exercicio/testeDaFala.ts`) and the text normalization (`dominio/normalizacao.ts`) are unit-tested.
 
 ## How
 
