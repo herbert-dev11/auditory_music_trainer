@@ -65,6 +65,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 | RF26 | Na biblioteca, mostrar o desenho do item (braço do violão ou teclado do piano) e tocar nota por nota, acendendo cada corda ou tecla, antes do acorde inteiro ([plano 006](../plans/006-demonstracao-nota-por-nota.md)) | S | ✔ |
 | RF27 | Tema claro e escuro, com opção de seguir o sistema; a escolha fica guardada no navegador ([plano 007](../plans/007-tema-claro-e-escuro.md)) | S | ✔ |
 | RF28 | No violão, pestana desenhada no diagrama e botão "Simplificado" que mostra e toca a versão mais fácil do acorde: o acorde aberto quando existe; senão, a versão de 4 cordas. Desligado, ficam as formas com pestana ([plano 008](../plans/008-acordes-abertos-pestana-e-simplificado.md)) | S | ✔ |
+| RF29 | Aplicativo para celular (Android e iPhone) em **React Native**, usando o reconhecimento de fala nativo do aparelho com a lista das palavras do jogo como pista. **Trabalho futuro** | W | |
 
 ### Requisitos não funcionais
 
@@ -172,6 +173,7 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 | B0–B6 | Back-end (pós-MVP): contas, histórico, estatísticas, sincronização, LGPD | RF23 | [002](../plans/002-back-end.md) (rascunho) |
 | 7 | Pós-MVP: recorde, seleção individual, manual, nota de referência, estatísticas, outros instrumentos, PWA | RF17–RF21, RF24, RNF12 | — |
 | 8 | Avaliação: taxa de reconhecimento (RNF07/08) e questionário SUS | — | — |
+| Futuro | Aplicativo para celular em React Native (trabalho futuro, depois do MVP e da avaliação) | RF29 | — |
 
 ~~O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógica e a interface sem depender do reconhecimento de fala, e continua útil como alternativa (RF15).~~ Na v0.3, o autor decidiu que o jogo é respondido só por voz: a fase 4 (teste da fala) veio antes, e as fases 3, 5 e 6 foram feitas juntas no plano 011. A lógica do jogo continua separada e testada sem depender da fala (`exercicio/partida.ts`).
 
@@ -180,7 +182,8 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 | Item | Onde fica |
 |---|---|
 | Contas, histórico em servidor, sincronização (RF23) | Pós-MVP, [plano 002](../plans/002-back-end.md) |
-| Login social, ranking público, painel administrativo, app nativo, pagamentos | Sem previsão |
+| Aplicativo para celular em React Native (RF29) | **Trabalho futuro.** Motivo: o reconhecimento de fala do navegador capta ruído e não aceita lista de palavras; o nativo do celular aceita pistas de vocabulário e dá mais controle do microfone. A interface seria refeita em React Native, mas `dominio/`, `exercicio/` e `contratos/` (TypeScript puro, sem navegador) podem ser reaproveitados. Alternativas mais leves avaliadas: PWA (instalável, mas com o mesmo reconhecimento do navegador) e Capacitor (empacota este app, com o reconhecimento nativo). Custos: contas das lojas (Google Play e Apple) e um Mac para gerar a versão de iPhone |
+| Login social, ranking público, painel administrativo, pagamentos | Sem previsão |
 | Reconhecimento de fala no servidor (Vosk/Whisper) | Só se a Web Speech API não atingir o RNF07 |
 | Detecção da nota cantada (afinação) | Outro produto |
 | Sons de sites sem licença explícita (por exemplo, Cifra Club) | Proibido (RNF05) |
@@ -192,6 +195,7 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 | Navegadores com voz (RNF01) | Chrome e Edge no computador | Chrome (computador e Android) e iPhone; os outros mostram aviso (decisão do autor; o Firefox não tem serviço de reconhecimento) |
 | Resposta no jogo (RF15) | Por voz, com botões como reserva sem microfone | Só por voz; no jogo, só os botões "Ouvir de novo" e "Parar" (decisão do autor) |
 | Microfone (RF07) | Abre sozinho depois da pergunta | Abre só enquanto o usuário segura o botão ou a barra de espaço, para captar menos ruído |
+| App para celular | "App nativo" sem previsão | Novo RF29 (W): aplicativo em React Native como trabalho futuro (decisão do autor) |
 | Instrumentos | Só violão; piano e teclado como RF22, desejável, fora do MVP | Piano entra no MVP (RF22, M); teclado e outros passam para o RF24 (C). Motivo: o timbre dos acordes de violão montados com amostras isoladas soa artificial, e o piano não tem essa limitação ([pesquisa-de-sons.md](pesquisa-de-sons.md)) |
 | Navegação (RF01, UC01) | Violão → Notas / Acordes | Tela inicial (Iniciar jogo, Biblioteca, Teoria, Entrar / Sair desabilitado); em "Iniciar jogo", Violão / Piano → Notas / Acordes → raízes e tipos |
 | Tipos de acorde (RF02) | Maior, menor, sétima (7, m7 e 7M juntos) | As 5 qualidades separadas; notas e acordes não se misturam na mesma partida |
