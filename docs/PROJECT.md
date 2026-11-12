@@ -1,10 +1,10 @@
 # Treinador Musical Auditivo
 
-Fonte da verdade do produto. Em português, para a operação ler. Versão 0.2 dos requisitos (2026-11-11).
+Fonte da verdade do produto. Em português, para a operação ler. Versão 0.3 dos requisitos (2026-11-11).
 
 ## O que é
 
-Aplicação web de treino auditivo com **resposta por voz**. O sistema toca uma nota ou um acorde de violão, pergunta "Que nota é essa?" com voz sintética e o usuário responde falando ("dó", "lá menor", "dó sustenido menor"). O sistema reconhece a fala, compara com a resposta certa e segue até o primeiro erro; a pontuação é a sequência de acertos.
+Aplicação web de treino auditivo com **resposta por voz**. O sistema toca uma nota ou um acorde de violão ou de piano, pergunta "Que nota é essa?" com voz sintética e o usuário responde falando ("dó", "lá menor", "dó sustenido menor"). O sistema reconhece a fala, compara com a resposta certa e segue até o primeiro erro; a pontuação é a sequência de acertos.
 
 O diferencial: os treinadores auditivos comuns usam botões; aqui a resposta é falada, como numa aula com professor.
 
@@ -23,11 +23,11 @@ Contas de usuário só entram com o back-end ([plano 002](../plans/002-back-end.
 Os itens são filtrados por **dois eixos independentes**, porque um acorde pode ser sustenido **e** menor ao mesmo tempo (`C#m`):
 
 - **Raiz**: naturais (C D E F G A B) ou sustenidos/bemóis (C# D# F# G# A#).
-- **Tipo** (só para acordes): maior, menor, com sétima (7, m7, 7M).
+- **Tipo** (só para acordes): maior, menor, com sétima (7), menor com sétima (m7), com sétima maior (7M).
 
-Exemplo: "Naturais + Maior + Menor" gera C, Cm, D, Dm, ..., B, Bm. Para notas isoladas, só o filtro de raiz se aplica.
+Exemplo: "Naturais + Maior + Menor" gera C, Cm, D, Dm, ..., B, Bm. Para notas isoladas, só o filtro de raiz se aplica. Notas e acordes não se misturam na mesma partida: "dó" seria ambíguo (nota ou dó maior, RN03).
 
-Navegação da tela inicial: **Violão → Notas / Acordes → categorias**.
+Tela inicial: **Iniciar jogo**, **Biblioteca de sons**, **Teoria musical** e **Entrar / Sair** (desabilitado até existirem contas, RF23). Em "Iniciar jogo": **instrumento (Violão / Piano) → Notas ou Acordes → raízes e tipos**. Os itens e os filtros são os mesmos nos dois instrumentos; muda só o som.
 
 Como cifra, nome falado e som se ligam está em [nomenclatura.md](nomenclatura.md).
 
@@ -37,11 +37,11 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 
 | ID | Requisito | Prior. | MVP |
 |---|---|---|---|
-| RF01 | Tela inicial com os caminhos Violão → Notas / Acordes e as categorias disponíveis | M | ✔ |
-| RF02 | Selecionar o que entra no jogo por filtros de raiz (naturais, sustenidos) e de tipo (maior, menor, sétima) | M | ✔ |
+| RF01 | Tela inicial com o nome do sistema e os caminhos Iniciar jogo, Biblioteca de sons, Teoria musical e Entrar / Sair (este desabilitado até o RF23) ([plano 009](../plans/009-tela-inicial-e-selecao.md)) | M | ✔ |
+| RF02 | Selecionar o que entra no jogo: instrumento, notas ou acordes, filtro de raiz (naturais, sustenidos) e, para acordes, os tipos (maior, menor, 7, m7, 7M); a última seleção fica guardada | M | ✔ |
 | RF03 | Mostrar uma explicação de como o jogo funciona antes de começar | M | ✔ |
 | RF04 | Contagem regressiva de 3 segundos antes do primeiro exercício | M | ✔ |
-| RF05 | Sortear e tocar uma nota ou acorde entre os itens selecionados (acorde com voicing de violão e cordas em sequência) | M | ✔ |
+| RF05 | Sortear e tocar uma nota ou acorde entre os itens selecionados (no violão, acorde com voicing de violão e cordas em sequência; no piano, notas do acorde juntas) | M | ✔ |
 | RF06 | Perguntar "Que nota é essa?" com voz sintética | M | ✔ |
 | RF07 | Ativar o microfone só depois que o som e a pergunta terminarem | M | ✔ |
 | RF08 | Cronômetro visível com o tempo de resposta (RN02) | M | ✔ |
@@ -52,14 +52,19 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 | RF13 | Encerrar o jogo no primeiro erro ou quando o usuário clicar em "Parar" (RN05) | M | ✔ |
 | RF14 | Mostrar o resultado: sequência de acertos e os itens acertados | M | ✔ |
 | RF15 | Responder por botões quando o microfone for recusado ou não estiver disponível | M | ✔ |
-| RF16 | Biblioteca de sons: aba com todas as notas e acordes, com botão de play, para ouvir antes de jogar | S | ✔ |
+| RF16 | Biblioteca de sons: aba com todas as notas e acordes, com botão de play e abas Violão / Piano, para ouvir antes de jogar | S | ✔ |
 | RF17 | Guardar o recorde (maior sequência de acertos) no navegador | S | |
 | RF18 | Marcar ou desmarcar itens individuais dentro da seleção | S | |
 | RF19 | Manual de teoria musical: o que é uma nota, como um acorde é formado, sustenido e bemol, progressões | C | |
 | RF20 | Modo com nota de referência (toca dó antes da nota misteriosa) | C | |
 | RF21 | Estatísticas: quais notas o usuário mais confunde | C | |
-| RF22 | Outros instrumentos (piano, teclado) | C | |
+| RF22 | Piano como segundo instrumento: o usuário escolhe violão ou piano ([plano 004](../plans/004-piano.md)) | M | ✔ |
 | RF23 | Contas de usuário e histórico sincronizado em servidor ([plano 002](../plans/002-back-end.md)) | W | |
+| RF24 | Outros instrumentos (teclado, violão de aço etc.) | C | |
+| RF25 | Acessibilidade para pessoas cegas: botão que liga ou desliga o anúncio por voz do nome do item tocado na biblioteca; a escolha fica guardada no navegador ([plano 005](../plans/005-anuncio-por-voz.md)) | S | ✔ |
+| RF26 | Na biblioteca, mostrar o desenho do item (braço do violão ou teclado do piano) e tocar nota por nota, acendendo cada corda ou tecla, antes do acorde inteiro ([plano 006](../plans/006-demonstracao-nota-por-nota.md)) | S | ✔ |
+| RF27 | Tema claro e escuro, com opção de seguir o sistema; a escolha fica guardada no navegador ([plano 007](../plans/007-tema-claro-e-escuro.md)) | S | ✔ |
+| RF28 | No violão, pestana desenhada no diagrama e botão "Simplificado" que mostra e toca a versão mais fácil do acorde: o acorde aberto quando existe; senão, a versão de 4 cordas. Desligado, ficam as formas com pestana ([plano 008](../plans/008-acordes-abertos-pestana-e-simplificado.md)) | S | ✔ |
 
 ### Requisitos não funcionais
 
@@ -69,7 +74,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 | RNF02 | O microfone nunca fica aberto enquanto o som ou a voz sintética tocam | M |
 | RNF03 | Não gravar nem armazenar o áudio da voz do usuário | M |
 | RNF04 | Avisar que, na Web Speech API, o áudio da fala é processado pelo provedor do navegador (transparência, LGPD) | M |
-| RNF05 | Usar somente amostras com licença livre, com créditos visíveis no app ([licencas.md](licencas.md)) | M |
+| RNF05 | Usar somente amostras com licença livre, com créditos visíveis no app ([licencas.md](licencas.md); pesquisa em [pesquisa-de-sons.md](pesquisa-de-sons.md)) | M |
 | RNF06 | Interface e voz sintética em português do Brasil | M |
 | RNF07 | Reconhecimento correto de pelo menos 90% para as 7 notas naturais (meta a medir) | S |
 | RNF08 | No máximo 1,5 s entre o fim da fala e o resultado (meta a medir) | S |
@@ -82,7 +87,7 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 
 - **RN01**: notas enarmônicas são equivalentes (dó sustenido = ré bemol). A comparação é sempre pela classe de altura (0–11), nunca pelo texto.
 - **RN02**: o tempo de resposta é de 5 s para notas e 8 s para acordes.
-- **RN03**: no violão, a nota sozinha vale como acorde maior ("dó" = dó maior). Menor e sétima precisam ser ditos ("dó menor", "dó com sétima").
+- **RN03**: num exercício de acorde (violão ou piano), a nota sozinha vale como acorde maior ("dó" = dó maior). Menor e sétima precisam ser ditos ("dó menor", "dó com sétima").
 - **RN04**: cada exercício tem no máximo uma segunda chance, usada quando a fala não é entendida ou o tempo acaba em silêncio. "Não entendi" não é erro.
 - **RN05**: uma resposta entendida mas errada encerra o jogo na hora, sem segunda chance.
 - **RN06**: "Ouvir de novo" reinicia o cronômetro do exercício.
@@ -95,16 +100,16 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 |---|---|---|
 | UC01 | Selecionar itens do treino | RF01, RF02, RF18, RN07 |
 | UC02 | Jogar o treino auditivo | RF03–RF15, RN01–RN08 |
-| UC03 | Ouvir a biblioteca de sons | RF16 |
+| UC03 | Ouvir a biblioteca de sons | RF16, RF22, RF25, RF26 |
 | UC04 | Consultar o manual de teoria | RF19 |
 
 ### UC01: Selecionar itens do treino
 
 **Ator:** Usuário. **Pré-condição:** nenhuma. **Pós-condição:** seleção pronta para o UC02.
 
-1. Na tela inicial, o usuário escolhe Violão → Notas ou Acordes.
-2. O sistema mostra os filtros disponíveis (raiz e, para acordes, tipo).
-3. O usuário marca os filtros desejados.
+1. Na tela inicial, o usuário clica em "Iniciar jogo".
+2. O sistema mostra a tela "Novo jogo", já com a última seleção usada.
+3. O usuário escolhe o instrumento (Violão ou Piano), Notas ou Acordes, as raízes e, para acordes, os tipos.
 4. O sistema mostra quantos e quais itens entram no jogo.
 5. O usuário clica em "Começar" e segue para o UC02.
 
@@ -142,8 +147,9 @@ Legenda MoSCoW: **M** = obrigatório, **S** = importante, **C** = desejável, **
 
 1. O usuário abre a aba "Biblioteca".
 2. O sistema lista as notas e os acordes, agrupados pelos mesmos filtros do UC01.
-3. O usuário clica no play de um item.
-4. O sistema toca o som e mostra o nome do item (cifra e nome falado).
+3. O usuário escolhe a aba do instrumento (Violão ou Piano) e clica num item.
+4. O sistema mostra o nome do item (cifra e nome falado) e o desenho no instrumento (RF26), toca cada nota sozinha, acendendo a corda ou a tecla, e depois o acorde inteiro. Se o anúncio por voz estiver ligado (RF25), diz o nome em voz alta assim que o som acaba.
+5. O usuário pode repetir nota por nota ou só o acorde.
 
 ### UC04: Consultar o manual de teoria
 
@@ -156,14 +162,15 @@ As fases 0 a 6 formam o **MVP jogável**. Cada fase vira um ou mais planos em `p
 | Fase | Entrega | Requisitos | Plano |
 |---|---|---|---|
 | 0 | Configuração do projeto: Vite, TypeScript, Vitest, lint, CI, licença, créditos | — | [001](../plans/001-configuracao-do-projeto.md) |
-| 1 | Tocar notas e acordes com voicing de violão; biblioteca de sons | RF05 (som), RF16 | — |
-| 2 | Tela inicial e seleção por filtros de raiz e tipo | RF01, RF02, RN07 | — |
+| 1 | Tocar notas e acordes com voicing de violão; biblioteca de sons | RF05 (som), RF16 | [003](../plans/003-som-do-violao-e-biblioteca.md) |
+| 1b | Piano como segundo instrumento, com abas na biblioteca; anúncio do nome por voz; desenho e demonstração nota por nota; tema claro e escuro; acordes abertos, pestana e modo simplificado | RF05 (som), RF16, RF22, RF25–RF28 | [004](../plans/004-piano.md), [005](../plans/005-anuncio-por-voz.md), [006](../plans/006-demonstracao-nota-por-nota.md), [007](../plans/007-tema-claro-e-escuro.md), [008](../plans/008-acordes-abertos-pestana-e-simplificado.md) |
+| 2 | Tela inicial, navegação e seleção por instrumento, modo, raiz e tipo | RF01, RF02, RN07 | [009](../plans/009-tela-inicial-e-selecao.md) |
 | 3 | Jogo completo **com botões**: explicação, contagem, sorteio, cronômetro, "Ouvir de novo", fim no erro, resultado | RF03, RF04, RF05, RF08, RF10, RF12–RF15, RN02, RN05, RN06 | — |
 | 4 | Página isolada de teste da fala: mostrar transcrições e alternativas, registrar os resultados | RF09, RNF01 | — |
 | 5 | Interpretação da fala, com TDD a partir de [nomenclatura.md](nomenclatura.md) | RF10 (voz), RN01, RN03, RN08 | — |
 | 6 | Jogo por voz: voz sintética, microfone, segunda chance | RF06, RF07, RF09, RF11, RN04, RNF02–RNF04 | — |
 | B0–B6 | Back-end (pós-MVP): contas, histórico, estatísticas, sincronização, LGPD | RF23 | [002](../plans/002-back-end.md) (rascunho) |
-| 7 | Pós-MVP: recorde, seleção individual, manual, nota de referência, estatísticas, outros instrumentos, PWA | RF17–RF22, RNF12 | — |
+| 7 | Pós-MVP: recorde, seleção individual, manual, nota de referência, estatísticas, outros instrumentos, PWA | RF17–RF21, RF24, RNF12 | — |
 | 8 | Avaliação: taxa de reconhecimento (RNF07/08) e questionário SUS | — | — |
 
 O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógica e a interface sem depender do reconhecimento de fala, e continua útil como alternativa (RF15).
@@ -180,7 +187,18 @@ O jogo com botões (fase 3) vem antes da voz de propósito: valida toda a lógic
 
 ## Histórico
 
-| Assunto | v0.1 | v0.2 (atual) |
+| Assunto | v0.2 | v0.3 (atual) |
+|---|---|---|
+| Instrumentos | Só violão; piano e teclado como RF22, desejável, fora do MVP | Piano entra no MVP (RF22, M); teclado e outros passam para o RF24 (C). Motivo: o timbre dos acordes de violão montados com amostras isoladas soa artificial, e o piano não tem essa limitação ([pesquisa-de-sons.md](pesquisa-de-sons.md)) |
+| Navegação (RF01, UC01) | Violão → Notas / Acordes | Tela inicial (Iniciar jogo, Biblioteca, Teoria, Entrar / Sair desabilitado); em "Iniciar jogo", Violão / Piano → Notas / Acordes → raízes e tipos |
+| Tipos de acorde (RF02) | Maior, menor, sétima (7, m7 e 7M juntos) | As 5 qualidades separadas; notas e acordes não se misturam na mesma partida |
+| RN03 | "No violão", a nota sozinha vale como acorde maior | Vale para os dois instrumentos |
+| Acessibilidade | Só teclado e contraste (RNF11) | Novo RF25: anúncio por voz do nome do item na biblioteca, para pessoas cegas |
+| Biblioteca (UC03) | Lista com play | Desenho do item e demonstração nota por nota (RF26), inspirada nos dicionários de acordes, com desenhos próprios |
+| Tema | Só o do sistema | Claro, escuro ou do sistema, à escolha do usuário (RF27) |
+| Acordes de violão | Só formas com pestana (C = x35553), sem a pestana no desenho | Formas com pestana continuam o padrão, agora com a pestana desenhada; botão "Simplificado" troca pelos abertos (C = x32010) ou pela versão de 4 cordas (RF28) |
+
+| Assunto | v0.1 | v0.2 |
 |---|---|---|
 | Escopo do MVP | Só notas isoladas; acordes depois | Teste jogável com notas **e** acordes, selecionados pelos filtros |
 | Tela inicial e seleção | Configuração genérica e níveis progressivos | Tela inicial Violão → Notas / Acordes (RF01) e filtros de raiz e tipo (RF02); níveis saíram |

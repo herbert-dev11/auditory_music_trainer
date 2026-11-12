@@ -28,7 +28,7 @@ Consulta no registro do npm em 2026-11-11. Instalação em 2026-11-11: versões 
 
 | Pacote | Versão instalada | Licença | Uso no projeto | Vai no app publicado? | Status |
 |---|---|---|---|---|---|
-| `tone` | 15.1.22 | MIT | Tocar os samples (`Sampler`) | Sim | instalado |
+| `tone` | 15.1.22 | MIT | Tocar os samples (`Sampler`) | Sim | em uso |
 | `tonal` | 6.5.1 | MIT | Teoria musical: MIDI, enarmonia, notas dos acordes | Sim | instalado |
 | `vite` | 8.3.8 | MIT | Servidor de desenvolvimento e build | Não (ferramenta) | em uso |
 | `typescript` | 7.0.2 | Apache-2.0 | Compilação | Não (ferramenta) | em uso |
@@ -44,7 +44,11 @@ As versões são as mais recentes na data da consulta. As versões realmente usa
 
 | Som | Origem | Autor original | Licença | Status |
 |---|---|---|---|---|
-| Violão nylon (`samples/guitar-nylon`) | [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments), reempacotado a partir do Freesound | **quartertone**, pacote [ClassicalGuitar-multisampled](https://freesound.org/people/quartertone/packs/11573/) (Freesound 11573); reempacotamento de Nicholaus P. Brosowsky | **CC BY** (Atribuição). O repositório declara CC BY 3.0; a página de um som consultado no Freesound indica CC BY 4.0. As duas exigem o mesmo crédito | planejado |
+| Violão nylon (`samples/guitar-nylon`) | [tonejs-instruments](https://github.com/nbrosowsky/tonejs-instruments), reempacotado a partir do Freesound | **quartertone**, pacote [ClassicalGuitar-multisampled](https://freesound.org/people/quartertone/packs/11573/) (Freesound 11573); reempacotamento de Nicholaus P. Brosowsky | **CC BY** (Atribuição). O repositório declara CC BY 3.0; a página de um som consultado no Freesound indica CC BY 4.0. As duas exigem o mesmo crédito | em uso desde 2026-11-11: 29 `.mp3` copiados **sem modificação** para `public/samples/guitar-nylon/` (tamanhos conferidos com o repositório de origem); crédito no `CREDITS.md`, na pasta dos samples e no rodapé da biblioteca |
+
+| Piano (`samples/piano`) | [Tonejs/audio, pasta salamander](https://github.com/Tonejs/audio/tree/master/salamander), versão mp3 do [Salamander Grand Piano](https://freepats.zenvoid.org/Piano/acoustic-grand-piano.html) | **Alexander Holm** | **CC BY 3.0** (declarada no README da pasta e na página do FreePats, consultados em 2026-11-11) | em uso desde 2026-11-11: 14 `.mp3` (A2 a C6) copiados **sem modificação** para `public/samples/piano/` (tamanhos conferidos com a origem); crédito no `CREDITS.md`, na pasta dos samples e no rodapé da biblioteca ([plano 004](../plans/004-piano.md)) |
+
+Como as fontes foram escolhidas (alternativas e motivos): [pesquisa-de-sons.md](pesquisa-de-sons.md).
 
 Observações sobre o tonejs-instruments:
 
@@ -60,7 +64,7 @@ Não têm licença a cumprir, mas têm consequências de privacidade.
 |---|---|---|
 | Web Audio API | Base do Tone.js | — |
 | Web Speech API (`SpeechRecognition`) | Reconhecer a resposta falada | No Chrome e no Edge, o áudio é enviado ao servidor do provedor do navegador. Exige aviso ao usuário (RNF04) e menção no relatório (LGPD) |
-| `speechSynthesis` | Voz sintética da pergunta | As vozes dependem do sistema operacional; não há dado do usuário envolvido |
+| `speechSynthesis` | Voz sintética da pergunta e anúncio do nome na biblioteca (RF25) | As vozes dependem do sistema operacional; não há dado do usuário envolvido |
 | `getUserMedia` (microfone) | Permissão do microfone | Só funciona em HTTPS ou `localhost`; o áudio não é gravado (RNF03) |
 
 ## O que cada licença exige
@@ -73,7 +77,9 @@ Não têm licença a cumprir, mas têm consequências de privacidade.
 
 ## Texto de crédito (para o `CREDITS.md` e a página do app)
 
-> **Sons de violão nylon:** "ClassicalGuitar-multisampled", de quartertone (Freesound), licença CC BY. Arquivos reempacotados por Nicholaus P. Brosowsky no projeto tonejs-instruments. Os arquivos foram usados como amostras no Tone.js[, e convertidos/cortados — ajustar se houver modificação].
+> **Sons de violão nylon:** "ClassicalGuitar-multisampled", de quartertone (Freesound), licença CC BY. Arquivos reempacotados por Nicholaus P. Brosowsky no projeto tonejs-instruments. Os arquivos foram usados sem modificação, como amostras no Tone.js.
+>
+> **Piano:** "Salamander Grand Piano", de Alexander Holm, licença CC BY 3.0. Versão em mp3 do repositório Tonejs/audio, usada sem modificação.
 >
 > **Bibliotecas:** Tone.js (MIT), Tonal (MIT) e as ferramentas listadas em `docs/licencas.md`.
 
@@ -89,6 +95,6 @@ Não têm licença a cumprir, mas têm consequências de privacidade.
 ## Pendências
 
 - [ ] Decidir a licença do código do projeto e criar o `LICENSE` (fase 0).
-- [ ] Criar o `CREDITS.md` a partir da seção "Texto de crédito" (fase 1, quando o primeiro som entrar).
+- [x] Criar o `CREDITS.md` a partir da seção "Texto de crédito" (fase 1, [plano 003](../plans/003-som-do-violao-e-biblioteca.md)).
 - [x] Atualizar as versões da tabela de dependências depois do `npm install`.
 - [ ] Se houver teste com pessoas (questionário SUS, medição de reconhecimento): perguntar ao orientador sobre Comitê de Ética (CEP) e termo de consentimento (TCLE).
